@@ -51,7 +51,7 @@ set(INCLUDES
 )
 
 set(SOURCES
-    src/qflags.cpp
+    src/command_line.cpp
 )
 
 add_library(qflags STATIC
@@ -63,3 +63,16 @@ target_include_directories(qflags
     PUBLIC
         include
 )
+
+################################################################################
+
+if(TARGET gtest)
+    add_executable(qflags_test
+                   test/command_line.cpp)
+
+    target_link_libraries(qflags_test qflags gtest gtest_main)
+
+    add_custom_command(TARGET qflags_test
+                       POST_BUILD
+                       COMMAND qflags_test)
+endif()
