@@ -2,20 +2,45 @@ cmake_minimum_required(VERSION 2.8.11)
 
 project(qflags)
 
+################################################################################
+
+set(GOOGLETEST_PATH ${CMAKE_SOURCE_DIR}/googletest)
+if(IS_DIRECTORY ${GOOGLETEST_PATH})
+    add_subdirectory(${GOOGLETEST_PATH})
+endif()
+
+################################################################################
+
 if(${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
     # /W4   Warning level 4
     # /WX   Warnings as errors
     # /MP   Multi-process compilation
     # /sdl  Additional security checks
     set(compiler_flags "/W4 /WX /MP /sdl")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${compiler_flags}")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${compiler_flags}")
+
+    # For MSVC, CMake sets certain flags to defaults we want to override.
+    # This replacement code is taken from sample in the CMake Wiki at
+    # http://www.cmake.org/Wiki/CMake_FAQ#Dynamic_Replace.
+    foreach (flag_var
+             CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
+             CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
+
+        # Set base compiler flags
+        set(${flag_var} "${${flag_var}} ${compiler_flags}")
+
+        # Disable dynamic linking to C++ runtime libraries
+        string(REPLACE "/MD" "-MT" ${flag_var} "${${flag_var}}")
+
+        # Disable C++ exceptions
+        string(REGEX REPLACE "/EH[a-z]+" "" ${flag_var} "${${flag_var}}")
+
+        # Disable RTTI
+        string(REPLACE "/GR" "/GR-" ${flag_var} "${${flag_var}}")
+
+    endforeach()
 
     # Disable C++ exceptions
-    string(REGEX REPLACE "/EH[a-z]+" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
-
-    # Disable RTTI
-    string(REGEX REPLACE "/GR" "/GR-" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+    add_definitions(-D_HAS_EXCEPTIONS=0)
 
     # Enable Unicode
     add_definitions(-D_UNICODE -DUNICODE)
