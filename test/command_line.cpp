@@ -208,3 +208,23 @@ TEST(command_list_test, copy_assignment)
     EXPECT_EQ(std::string("three"), dst.argv(2));
     EXPECT_EQ(nullptr, dst.argv(3));
 }
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * Test copy construction.
+ */
+TEST(command_list_test, copy_construction)
+{
+    char const* argv[] = { "one", "two", "three" };
+    int argc = _countof(argv);
+
+    auto src = qflags::command_line(argc, argv);
+    auto dst = qflags::command_line(src); // copy construction
+    src = qflags::command_line(0, argv); // reset src
+
+    ASSERT_EQ(3, dst.argc());
+    EXPECT_EQ(std::string("one"), dst.argv(0));
+    EXPECT_EQ(std::string("two"), dst.argv(1));
+    EXPECT_EQ(std::string("three"), dst.argv(2));
+    EXPECT_EQ(nullptr, dst.argv(3));
+}
