@@ -53,6 +53,16 @@ class command_line
      */
     command_line(int argc, char const* const* argv, char const* locale = "");
 
+    /**
+     * Construct a copy from another command_line instance.
+     */
+    command_line(command_line const& other);
+
+    /**
+     * Copy from another command_line instance.
+     */
+    command_line& operator=(command_line const& other);
+
     //! @return
     //!     number of argument strings.
     int argc() const { return static_cast<int>(_argv.size() - 1); }

@@ -115,6 +115,42 @@ command_line::command_line(int argc, char const* const* argv, char const* locale
 /**
  *
  */
+command_line::command_line(command_line const& other) {
+    _args = other._args;
+    // Initial argument pointers to local argument string.
+    _argv.resize(other._argv.size());
+    for (size_t ii = 0; ii < other._argv.size() - 1; ++ii) {
+        ptrdiff_t offset = other._argv[ii] - other._args.data();
+        _argv[ii] = _args.data() + offset;
+    }
+
+    // Follow C++ standard which specifies the value of argv[argc] shall be 0.
+    _argv.back() = nullptr;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ *
+ */
+command_line& command_line::operator=(command_line const& other) {
+    _args = other._args;
+    // Initial argument pointers to local argument string.
+    _argv.resize(other._argv.size());
+    for (size_t ii = 0; ii < other._argv.size() - 1; ++ii) {
+        ptrdiff_t offset = other._argv[ii] - other._args.data();
+        _argv[ii] = _args.data() + offset;
+    }
+
+    // Follow C++ standard which specifies the value of argv[argc] shall be 0.
+    _argv.back() = nullptr;
+
+    return *this;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ *
+ */
 void command_line::_init(int argc, wchar_t const* const* wargv) {
 #if defined(_WINDOWS)
     // Determine required size.

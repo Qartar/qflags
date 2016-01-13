@@ -3,6 +3,37 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 /**
+ * Test handling of unusual and invalid parameters.
+ */
+TEST(command_list_test, construct_argc_zero)
+{
+    char const* argv[] = { "" };
+    auto command_line = qflags::command_line(0, argv);
+
+    ASSERT_EQ(0, command_line.argc());
+    EXPECT_EQ(nullptr, command_line.argv(0));
+}
+
+TEST(command_list_test, construct_argv_null_argc_zero)
+{
+    char const** argv = nullptr;
+    auto command_line = qflags::command_line(0, argv);
+
+    ASSERT_EQ(0, command_line.argc());
+    EXPECT_EQ(nullptr, command_line.argv(0));
+}
+
+TEST(command_list_test, construct_argv_pnull_argc_zero)
+{
+    char const* args = nullptr;
+    auto command_line = qflags::command_line(0, &args);
+
+    ASSERT_EQ(0, command_line.argc());
+    EXPECT_EQ(nullptr, command_line.argv(0));
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
  * Test that a single wide-character string is correctly delimited and converted
  * to UTF-8.
  */
@@ -154,4 +185,26 @@ TEST(command_list_test, argv_1252)
     EXPECT_EQ(std::string(u8"--k\u00e9t"), command_line.argv(3));
     EXPECT_EQ(std::string(u8"--\u00fer\u00edr"), command_line.argv(4));
     EXPECT_EQ(nullptr, command_line.argv(5));
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * Test copy assignment.
+ */
+TEST(command_list_test, copy_assignment)
+{
+    const char** dst_argv = nullptr;
+    auto dst = qflags::command_line(0, dst_argv);
+    {
+        char const* argv[] = { "one", "two", "three" };
+        int argc = _countof(argv);
+
+        auto src = qflags::command_line(argc, argv);
+        dst = src; // copy assignment
+    }
+    ASSERT_EQ(3, dst.argc());
+    EXPECT_EQ(std::string("one"), dst.argv(0));
+    EXPECT_EQ(std::string("two"), dst.argv(1));
+    EXPECT_EQ(std::string("three"), dst.argv(2));
+    EXPECT_EQ(nullptr, dst.argv(3));
 }
