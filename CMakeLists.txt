@@ -51,6 +51,9 @@ set(INCLUDES
 )
 
 set(SOURCES
+    src/argument.cpp
+    src/flag.cpp
+    src/parser.cpp
     src/command_line.cpp
 )
 
@@ -68,7 +71,9 @@ target_include_directories(qflags
 
 if(TARGET gtest)
     add_executable(qflags_test
-                   test/command_line.cpp)
+                   test/command_line.cpp
+                   test/flag.cpp
+                   test/parser.cpp)
 
     target_link_libraries(qflags_test qflags gtest gtest_main)
 

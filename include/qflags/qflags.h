@@ -6,6 +6,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <map>
 
 namespace qflags {
 
@@ -85,6 +86,153 @@ class command_line
 
     //! Initialize from array of UTF-8 encoded character strings.
     void _init(int argc, char const* const* argv);
+};
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * @class argument
+ */
+class argument
+{
+  public:
+    //! @return
+    //!     name of the argument
+    std::string const& name() const { return _name; }
+
+    //! @return
+    //!     true if the argument was explicitly set by the command line
+    bool is_set() const { return _is_set; }
+
+    //! @return
+    //!     true if the argument is a flag
+    virtual bool is_flag() const;
+
+    //! @return
+    //!     true if the argument is implicitly convertible to a boolean
+    virtual bool is_boolean() const;
+
+    //! @return
+    //!     true if the argument is implicitly convertible to an integer
+    virtual bool is_integer() const;
+
+    //! @return
+    //!     true if the argument is implicitly convertible to a string
+    virtual bool is_string() const;
+
+    //! @return
+    //!     the argument value as a boolean if `is_boolean` is true
+    virtual bool value_boolean() const;
+
+    //! @return
+    //!     the argument value as an integer if `is_integer` is true
+    virtual int64_t value_integer() const;
+
+    //! @return
+    //!     the argument value as a string if `is_string` is true
+    virtual std::string const& value_string() const;
+
+    //! User-defined conversions to a boolean value
+    operator bool() const { return value_boolean(); }
+
+    //! User-defined conversions to an integer value
+    operator int64_t() const { return value_integer(); }
+
+    //! User-defined conversions to a string value
+    operator std::string const&() const { return value_string(); }
+
+  protected:
+    friend class parser;
+
+    std::string _name;  //!< name of this argument
+    bool _is_set;       //!< true if the argument was set by the command line
+
+  protected:
+    argument(char const* name);
+
+    //! Process the command line arguments for this argument.
+    //! @param[in] argc
+    //!     the number of arguments in the argv array
+    //! @param[in] argv
+    //!     an array of arguments starting at this argument's name
+    //! @param[out] errors
+    //!     a string describing any errors that occurred during parsing
+    //! @return
+    //!     the number of command line arguments consumed by this argument, or
+    //!     -1 if parsing failed.
+    virtual int parse(int argc, char const* const* argv, std::string* errors) = 0;
+};
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * @class parser
+ */
+class parser
+{
+  public:
+    parser();
+
+    //! add an argument to the parser
+    //! @param[in] arg
+    //!     an argument, a reference is held by the parser
+    //! @param[out] errors
+    //!     a string describing any errors that occurred
+    bool add_argument(argument* arg, std::string* errors);
+
+    /**
+     * parse the command line.
+     */
+    bool parse(command_line const& command_line, std::string* errors);
+
+    //!
+    argument const& operator[](std::string const& name) const;
+
+    //! @return
+    //!     number of argument strings.
+    int argc() const { return _command_line.argc(); }
+
+    //! @return
+    //!     array of UTF-8 encoded argument strings.
+    char const* const* argv() const { return _command_line.argv(); }
+
+    //! @return
+    //!     specified argument by index as a UTF-8 encoded string.
+    char const* argv(int argn) const { return _command_line.argv(argn); }
+
+  private:
+    command_line _command_line;
+    std::map<std::string, argument*> _arguments;
+    std::vector<argument*> _commands;
+    std::vector<argument*> _flags;
+
+  private:
+    bool parse_command(int argc, char const* const* argv, std::string* errors);
+    bool parse_flags(char const* arg, std::string* errors);
+};
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * @class flag
+ */
+class flag
+    : public argument
+{
+  public:
+    flag(char const* name);
+    flag(char const* name, char const* short_name);
+
+    virtual bool is_flag() const final { return true; }
+
+    virtual bool is_boolean() const final { return true; }
+
+    //! @return
+    //!     true if the flag was explicitly set by the command line
+    virtual bool value_boolean() const final { return _is_set; }
+
+  protected:
+    virtual int parse(int argc, char const* const* argv, std::string* errors) override;
+
+  private:
+    std::string _short_name;
 };
 
 } // namespace qflags
