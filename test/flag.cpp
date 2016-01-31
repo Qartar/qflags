@@ -176,3 +176,54 @@ TEST(flag_test, parse_long_flag)
         EXPECT_EQ(0, errors.length());
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * Test that the parser correctly detects an invalid short flag.
+ */
+TEST(flag_test, parse_invalid_short_flag)
+{
+    auto parser = qflags::parser();
+
+    char const* argv[] = { "-f" };
+    auto command_line = qflags::command_line(_countof(argv), argv);
+
+    {
+        std::string errors;
+
+        ASSERT_EQ(false, parser.parse(command_line, &errors));
+        EXPECT_NE(0, errors.length());
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * Test that the parser correctly detects an invalid short flag in a group.
+ */
+TEST(flag_test, parse_invalid_short_flag_group)
+{
+    auto parser = qflags::parser();
+
+    char const* argv[] = { "-adc" };
+    auto command_line = qflags::command_line(_countof(argv), argv);
+
+    auto flag_a = qflags::flag("flag_a", "a");
+    auto flag_b = qflags::flag("flag_b", "b");
+    auto flag_c = qflags::flag("flag_c", "c");
+
+    {
+        std::string errors;
+
+        ASSERT_EQ(true, parser.add_argument(&flag_a, &errors));
+        ASSERT_EQ(true, parser.add_argument(&flag_b, &errors));
+        ASSERT_EQ(true, parser.add_argument(&flag_c, &errors));
+        EXPECT_EQ(0, errors.length());
+    }
+
+    {
+        std::string errors;
+
+        ASSERT_EQ(false, parser.parse(command_line, &errors));
+        EXPECT_NE(0, errors.length());
+    }
+}
