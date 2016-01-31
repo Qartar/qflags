@@ -248,4 +248,46 @@ class flag
     std::string _short_name;
 };
 
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * @class option
+ */
+class option
+    : public argument
+{
+  public:
+
+    //! All options are implicitly convertible to a string.
+    virtual bool is_string() const final { return true; }
+
+    //! @return
+    //!     argument value as a string
+    virtual std::string const& value_string() const override { return _value_string; }
+
+  protected:
+    std::string _value_string;
+
+  protected:
+    option(char const* name, char const* default_value = "") :
+        argument(name),
+        _value_string(default_value ? default_value : "") {}
+};
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * @class string_option
+ */
+class string_option
+    : public option
+{
+  public:
+    string_option(char const* name, char const* default_value = "");
+
+  protected:
+    std::string _default_value;
+
+  protected:
+    virtual int parse(int argc, char const* const* argv, std::string* errors) override;
+};
+
 } // namespace qflags

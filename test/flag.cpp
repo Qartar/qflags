@@ -5,7 +5,7 @@
 /**
  * Test that flag correctly reports its capabilities.
  */
-TEST(flag_test, values)
+TEST(flag_test, capabilities)
 {
     auto name = std::string("flag");
     auto flag = qflags::flag(name.c_str());
@@ -191,7 +191,7 @@ TEST(flag_test, parse_invalid_short_flag)
     {
         std::string errors;
 
-        ASSERT_EQ(false, parser.parse(command_line, &errors));
+        EXPECT_EQ(false, parser.parse(command_line, &errors));
         EXPECT_NE(0, errors.length());
     }
 }
@@ -223,7 +223,7 @@ TEST(flag_test, parse_invalid_short_flag_group)
     {
         std::string errors;
 
-        ASSERT_EQ(false, parser.parse(command_line, &errors));
+        EXPECT_EQ(false, parser.parse(command_line, &errors));
         EXPECT_NE(0, errors.length());
     }
 }

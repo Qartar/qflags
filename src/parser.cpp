@@ -95,14 +95,16 @@ bool parser::parse(command_line const& command_line, std::string* errors)
                 }
             }
 
-            if (count) {
+            if (count > 0) {
                 argv.erase(argv.cbegin() + ii,
                            argv.cbegin() + ii + count);
                 continue;
-            } else {
+            } else if (count == 0) {
                 errors->append("Error: '");
                 errors->append(argv[ii] + 2);
                 errors->append("' is not a valid option.\n");
+                return false;
+            } else {
                 return false;
             }
         }
