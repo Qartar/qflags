@@ -80,6 +80,31 @@ bool parser::parse(command_line const& command_line, std::string* errors)
             argv.erase(argv.cbegin() + ii);
             continue;
         }
+        // Arg is a long flag or option.
+        else if (argv[ii][0] == '-' && argv[ii][1] == '-') {
+            int count = 0;
+
+            for (auto iter : _arguments) {
+                count = iter.second->parse(static_cast<int>(argv.size()),
+                                           argv.data(),
+                                           errors);
+
+                if (count) {
+                    break;
+                }
+            }
+
+            if (count) {
+                argv.erase(argv.cbegin() + ii,
+                           argv.cbegin() + ii + count);
+                continue;
+            } else {
+                errors->append("Error: '");
+                errors->append(argv[ii] + 2);
+                errors->append("' is not a valid option.\n");
+                return false;
+            }
+        }
 
         ++ii; // Only increment if no arguments were removed.
     }

@@ -138,3 +138,33 @@ TEST(flag_test, parse_short_flags_groups)
         EXPECT_EQ(0, errors.length());
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * Test that the parser can handle a flag using long form arguments.
+ */
+TEST(flag_test, parse_long_flag)
+{
+    auto parser = qflags::parser();
+
+    char const* argv[] = { "--flag" };
+    auto command_line = qflags::command_line(_countof(argv), argv);
+
+    auto flag = qflags::flag("flag", "f");
+
+    {
+        std::string errors;
+
+        ASSERT_EQ(true, parser.add_argument(&flag, &errors));
+        EXPECT_EQ(0, errors.length());
+    }
+
+    {
+        std::string errors;
+
+        ASSERT_EQ(true, parser.parse(command_line, &errors));
+        EXPECT_EQ(true, static_cast<bool>(parser["flag"]));
+        EXPECT_EQ(true, static_cast<bool>(flag));
+        EXPECT_EQ(0, errors.length());
+    }
+}
