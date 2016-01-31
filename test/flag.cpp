@@ -52,6 +52,8 @@ TEST(flag_test, parse_short_flag)
         ASSERT_EQ(true, parser.parse(command_line, &errors));
         EXPECT_EQ(true, static_cast<bool>(parser["flag"]));
         EXPECT_EQ(true, static_cast<bool>(flag));
+        EXPECT_EQ(1, parser.argc());
+        EXPECT_EQ(0, parser.remaining_argc());
         EXPECT_EQ(0, errors.length());
     }
 }
@@ -90,6 +92,8 @@ TEST(flag_test, parse_short_flags)
         EXPECT_EQ(true, static_cast<bool>(flag_m));
         EXPECT_EQ(false, static_cast<bool>(flag_i));
         EXPECT_EQ(true, static_cast<bool>(flag_a));
+        EXPECT_EQ(1, parser.argc());
+        EXPECT_EQ(0, parser.remaining_argc());
         EXPECT_EQ(0, errors.length());
     }
 }
@@ -135,6 +139,8 @@ TEST(flag_test, parse_short_flags_groups)
         EXPECT_EQ(true, static_cast<bool>(parser["flag_d"]));
         EXPECT_EQ(false, static_cast<bool>(parser["flag_e"]));
         EXPECT_EQ(true, static_cast<bool>(parser["flag_f"]));
+        EXPECT_EQ(2, parser.argc());
+        EXPECT_EQ(0, parser.remaining_argc());
         EXPECT_EQ(0, errors.length());
     }
 }
@@ -165,6 +171,8 @@ TEST(flag_test, parse_long_flag)
         ASSERT_EQ(true, parser.parse(command_line, &errors));
         EXPECT_EQ(true, static_cast<bool>(parser["flag"]));
         EXPECT_EQ(true, static_cast<bool>(flag));
+        EXPECT_EQ(1, parser.argc());
+        EXPECT_EQ(0, parser.remaining_argc());
         EXPECT_EQ(0, errors.length());
     }
 }

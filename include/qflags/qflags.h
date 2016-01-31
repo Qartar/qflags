@@ -198,8 +198,21 @@ class parser
     //!     specified argument by index as a UTF-8 encoded string.
     char const* argv(int argn) const { return _command_line.argv(argn); }
 
+    //! @return
+    //!     number of argument strings remaining after parsing.
+    int remaining_argc() const { return _remaining.argc(); }
+
+    //! @return
+    //!     array of UTF-8 encoded argument strings remaining after parsing.
+    char const* const* remaining_argv() const { return _remaining.argv(); }
+
+    //! @return
+    //!     specified argument by index as a UTF-8 encoded string.
+    char const* remaining_argv(int argn) const { return _remaining.argv(argn); }
+
   private:
     command_line _command_line;
+    command_line _remaining;
     std::map<std::string, argument*> _arguments;
     std::vector<argument*> _commands;
     std::vector<argument*> _flags;

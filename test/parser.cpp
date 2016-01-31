@@ -15,6 +15,8 @@ TEST(parser_test, parse_empty)
     std::string errors;
 
     EXPECT_EQ(true, parser.parse(command_line, &errors));
+    EXPECT_EQ(0, parser.argc());
+    EXPECT_EQ(0, parser.remaining_argc());
     EXPECT_EQ(0, errors.length());
 }
 
@@ -32,5 +34,7 @@ TEST(parser_test, parse_no_arguments)
     std::string errors;
 
     EXPECT_EQ(true, parser.parse(command_line, &errors));
+    EXPECT_EQ(3, parser.argc());
+    EXPECT_EQ(3, parser.remaining_argc());
     EXPECT_EQ(0, errors.length());
 }

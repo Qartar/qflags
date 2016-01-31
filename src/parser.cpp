@@ -11,7 +11,8 @@ namespace qflags {
 
 //------------------------------------------------------------------------------
 parser::parser() :
-    _command_line(0, (char const* const*)nullptr, nullptr) {}
+    _command_line(0, (char const* const*)nullptr, nullptr),
+    _remaining(0, (char const* const*)nullptr, nullptr) {}
 
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -108,6 +109,10 @@ bool parser::parse(command_line const& command_line, std::string* errors)
 
         ++ii; // Only increment if no arguments were removed.
     }
+
+    _remaining = qflags::command_line(static_cast<int>(argv.size()),
+                                      argv.data(),
+                                      nullptr);
     return true;
 }
 
