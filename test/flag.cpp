@@ -120,12 +120,12 @@ TEST(flag_test, parse_short_flags_groups)
     {
         std::string errors;
 
+        ASSERT_EQ(true, parser.add_argument(&flag_f, &errors));
+        ASSERT_EQ(true, parser.add_argument(&flag_e, &errors));
+        ASSERT_EQ(true, parser.add_argument(&flag_d, &errors));
         ASSERT_EQ(true, parser.add_argument(&flag_a, &errors));
         ASSERT_EQ(true, parser.add_argument(&flag_b, &errors));
         ASSERT_EQ(true, parser.add_argument(&flag_c, &errors));
-        ASSERT_EQ(true, parser.add_argument(&flag_d, &errors));
-        ASSERT_EQ(true, parser.add_argument(&flag_e, &errors));
-        ASSERT_EQ(true, parser.add_argument(&flag_f, &errors));
         EXPECT_EQ(0, errors.length());
     }
 
@@ -225,5 +225,77 @@ TEST(flag_test, parse_invalid_short_flag_group)
 
         ASSERT_EQ(false, parser.parse(command_line, &errors));
         EXPECT_NE(0, errors.length());
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * Test that the parser correctly handles multibyte short flag names.
+ */
+TEST(flag_test, parse_multibyte_short_flag)
+{
+    auto parser = qflags::parser();
+
+    wchar_t const* argv[] = { L"-\u010338" };
+    auto command_line = qflags::command_line(_countof(argv), argv);
+
+    auto flag = qflags::flag("flag", u8"\u010338");
+
+    {
+        std::string errors;
+
+        ASSERT_EQ(true, parser.add_argument(&flag, &errors));
+        EXPECT_EQ(0, errors.length());
+    }
+
+    {
+        std::string errors;
+
+        ASSERT_EQ(true, parser.parse(command_line, &errors));
+        EXPECT_EQ(true, static_cast<bool>(parser["flag"]));
+        EXPECT_EQ(true, static_cast<bool>(flag));
+        EXPECT_EQ(1, parser.argc());
+        EXPECT_EQ(0, parser.remaining_argc());
+        EXPECT_EQ(0, errors.length());
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * Test that the parser can handle multiple multibyte short flag names.
+ */
+TEST(flag_test, parse_multibyte_short_flags)
+{
+    auto parser = qflags::parser();
+
+    wchar_t const* argv[] = { L"-\u010338\u010342\u010334" };
+    auto command_line = qflags::command_line(_countof(argv), argv);
+
+    auto thiuth = qflags::flag("thiuth", u8"\u010338");
+    auto raida = qflags::flag("raida", u8"\u010342");
+    auto aihvus = qflags::flag("aihvus", u8"\u010334");
+
+    {
+        std::string errors;
+
+        ASSERT_EQ(true, parser.add_argument(&thiuth, &errors));
+        ASSERT_EQ(true, parser.add_argument(&raida, &errors));
+        ASSERT_EQ(true, parser.add_argument(&aihvus, &errors));
+        EXPECT_EQ(0, errors.length());
+    }
+
+    {
+        std::string errors;
+
+        ASSERT_EQ(true, parser.parse(command_line, &errors));
+        EXPECT_EQ(true, static_cast<bool>(parser["thiuth"]));
+        EXPECT_EQ(true, static_cast<bool>(parser["raida"]));
+        EXPECT_EQ(true, static_cast<bool>(parser["aihvus"]));
+        EXPECT_EQ(true, static_cast<bool>(thiuth));
+        EXPECT_EQ(true, static_cast<bool>(raida));
+        EXPECT_EQ(true, static_cast<bool>(aihvus));
+        EXPECT_EQ(1, parser.argc());
+        EXPECT_EQ(0, parser.remaining_argc());
+        EXPECT_EQ(0, errors.length());
     }
 }
