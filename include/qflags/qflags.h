@@ -290,4 +290,28 @@ class string_option
     virtual int parse(int argc, char const* const* argv, std::string* errors) override;
 };
 
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * @class integer_option
+ */
+class integer_option
+    : public option
+{
+  public:
+    integer_option(char const* name, int64_t default_value = 0);
+
+    virtual bool is_integer() const final { return true; }
+
+    //! @return
+    //!     the argument value as an integer if `is_integer` is true
+    virtual int64_t value_integer() const override { return _value_integer; }
+
+  protected:
+    int64_t _value_integer;
+    int64_t _default_value;
+
+  protected:
+    virtual int parse(int argc, char const* const* argv, std::string* errors) override;
+};
+
 } // namespace qflags
