@@ -1,6 +1,5 @@
 // argument.cpp
 //
-#pragma once
 
 #include <qflags/qflags.h>
 

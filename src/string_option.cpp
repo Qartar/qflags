@@ -1,6 +1,5 @@
 // string_option.cpp
 //
-#pragma once
 
 #include <qflags/qflags.h>
 
