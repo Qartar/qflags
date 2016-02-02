@@ -43,31 +43,26 @@ int choice_option::parse(int argc, char const* const* argv, std::string* errors)
     assert(argv && "argv must not be null!");
     assert(errors && "errors must not be null!");
 
-    // Check if argument matches option's name.
-    if (argc < 1 || argv[0] != ("--" + _name)) {
-        return 0;
+    // Check if argument could be parsed as any string.
+    auto string_result = string_option::parse(argc, argv, errors);
+    if (string_result < 2) {
+        return string_result;
     }
 
-    if (argc < 2) {
-        errors->append("Error: Insufficient arguments for choice option '");
-        errors->append(_name);
-        errors->append("'.\n");
-        return -1;
-    }
-
-    if (argv[1][0] == '-' || _choices.find(argv[1]) == _choices.cend()) {
+    // Check that the argument value is valid.
+    if (_choices.find(argv[1]) == _choices.cend()) {
         errors->append("Error: Invalid argument for choice option '");
         errors->append(_name);
         errors->append("': '");
         errors->append(argv[1]);
         errors->append("'.\n");
+
+        // Reset is_set to false, leave value undefined.
+        _is_set = false;
         return -1;
     }
 
-    _is_set = true;
-    _value_string = argv[1];
-
-    return 2;
+    return string_result;
 }
 
 } // namespace qflags

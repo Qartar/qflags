@@ -47,54 +47,27 @@ int range_option::parse(int argc, char const* const* argv, std::string* errors)
     assert(argv && "argv must not be null!");
     assert(errors && "errors must not be null!");
 
-    // Check if argument matches option's name.
-    if (argc < 1 || argv[0] != ("--" + _name)) {
-        return 0;
-    }
-
-    if (argc < 2) {
-        errors->append("Error: Insufficient arguments for range option '");
-        errors->append(_name);
-        errors->append("'.\n");
-        return -1;
-    }
-
-    char* endptr = nullptr;
-    long long value = std::strtoll(argv[1], &endptr, 0);
-
-    // Detect if parsing failed.
-    if (endptr == argv[1]) {
-        errors->append("Error: Failed to parse argument for range option '");
-        errors->append(_name);
-        errors->append("': '");
-        errors->append(argv[1]);
-        errors->append("'.\n");
-        return -1;
-    } else if (*endptr != '\0') {
-        errors->append("Error: Argument for range option '");
-        errors->append(_name);
-        errors->append("' contains invalid characters: '");
-        errors->append(endptr);
-        errors->append("'.\n");
-        return -1;
+    // Check if argument could be parsed as any integer.
+    auto integer_result = integer_option::parse(argc, argv, errors);
+    if (integer_result < 2 ) {
+        return integer_result;
     }
 
     // Check that the argument value is valid.
-    if ((_choices.size() && _choices.find(value) == _choices.cend())
-            || value < _minimum_value || value > _maximum_value) {
+    if ((_choices.size() && _choices.find(_value_integer) == _choices.cend())
+            || _value_integer < _minimum_value || _value_integer > _maximum_value) {
         errors->append("Error: Invalid argument for range option '");
         errors->append(_name);
         errors->append("': '");
         errors->append(argv[1]);
         errors->append("'.\n");
+
+        // Reset is_set to false, leave value undefined.
+        _is_set = false;
         return -1;
     }
 
-    _is_set = true;
-    _value_string = argv[1];
-    _value_integer = value;
-
-    return 2;
+    return integer_result;
 }
 
 } // namespace qflags
