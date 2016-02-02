@@ -17,7 +17,7 @@ choice_option::choice_option(char const* name,
     string_option(name, default_value)
 {
     _choices.insert(choices.begin(), choices.end());
-    assert(_choices.size() == choices.size());
+    assert(_choices.size() && _choices.size() == choices.size());
     assert(_choices.find(default_value) != _choices.cend());
 }
 

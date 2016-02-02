@@ -1,0 +1,229 @@
+#include <gtest/gtest.h>
+#include <qflags/qflags.h>
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * Test that range_option correctly reports its capabilities.
+ */
+TEST(range_option_test, capabilities)
+{
+    auto name = std::string("foo");
+    auto option = qflags::range_option(name.c_str(), -1, 1, 0);
+
+    EXPECT_EQ(name, option.name());
+    EXPECT_EQ(false, option.is_set());
+    EXPECT_EQ(false, option.is_flag());
+    EXPECT_EQ(false, option.is_boolean());
+    EXPECT_EQ(true, option.is_integer());
+    EXPECT_EQ(true, option.is_string());
+
+    EXPECT_DEATH(option.value_boolean(), "");
+    EXPECT_EQ(0, option.value_integer());
+    EXPECT_EQ("0", option.value_string());
+
+    EXPECT_DEATH(static_cast<bool>(option), "");
+    EXPECT_EQ(0, static_cast<int64_t>(option));
+    EXPECT_EQ("0", static_cast<std::string>(option));
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * Test that range_option correctly validates its contruction parameters.
+ */
+TEST(range_option_test, parameters)
+{
+    EXPECT_DEBUG_DEATH(qflags::range_option("foo", {}, 0), "")
+        << "Failed to assert when no range values were provided.";
+
+    EXPECT_DEBUG_DEATH(qflags::range_option("foo", { 0, 1 }, 2), "")
+        << "Failed to assert when default value is not a range value.";
+
+    EXPECT_DEBUG_DEATH(qflags::range_option("foo", 0, 1, 2), "")
+        << "Failed to assert when range values are not distinct.";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * Test that the parser correctly parses an enumerated range value.
+ */
+TEST(range_option_test, parse_range_enumerated)
+{
+    auto parser = qflags::parser();
+    auto option = qflags::range_option("foo", {0, -1, 2}, 0);
+
+    {
+        std::string errors;
+
+        ASSERT_EQ(true, parser.add_argument(&option, &errors));
+        EXPECT_EQ(0, errors.length());
+    }
+
+    {
+        char const* argv[] = { "--foo", "-1" };
+        auto command_line = qflags::command_line(_countof(argv), argv);
+
+        std::string errors;
+
+        ASSERT_EQ(true, parser.parse(command_line, &errors));
+        EXPECT_EQ(-1, static_cast<int64_t>(parser["foo"]));
+        EXPECT_EQ(-1, static_cast<int64_t>(option));
+        EXPECT_EQ(2, parser.argc());
+        EXPECT_EQ(0, parser.remaining_argc());
+        EXPECT_EQ(0, errors.length());
+    }
+
+    {
+        char const* argv[] = { "--foo", "2" };
+        auto command_line = qflags::command_line(_countof(argv), argv);
+
+        std::string errors;
+
+        ASSERT_EQ(true, parser.parse(command_line, &errors));
+        EXPECT_EQ(2, static_cast<int64_t>(parser["foo"]));
+        EXPECT_EQ(2, static_cast<int64_t>(option));
+        EXPECT_EQ(2, parser.argc());
+        EXPECT_EQ(0, parser.remaining_argc());
+        EXPECT_EQ(0, errors.length());
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * Test that the parser correctly parses a bounded range value.
+ */
+TEST(range_option_test, parse_range_bounded)
+{
+    auto parser = qflags::parser();
+    auto option = qflags::range_option("foo", -1, 2, 0);
+
+    {
+        std::string errors;
+
+        ASSERT_EQ(true, parser.add_argument(&option, &errors));
+        EXPECT_EQ(0, errors.length());
+    }
+
+    {
+        char const* argv[] = { "--foo", "-1" };
+        auto command_line = qflags::command_line(_countof(argv), argv);
+
+        std::string errors;
+
+        ASSERT_EQ(true, parser.parse(command_line, &errors));
+        EXPECT_EQ(-1, static_cast<int64_t>(parser["foo"]));
+        EXPECT_EQ(-1, static_cast<int64_t>(option));
+        EXPECT_EQ(2, parser.argc());
+        EXPECT_EQ(0, parser.remaining_argc());
+        EXPECT_EQ(0, errors.length());
+    }
+
+    {
+        char const* argv[] = { "--foo", "2" };
+        auto command_line = qflags::command_line(_countof(argv), argv);
+
+        std::string errors;
+
+        ASSERT_EQ(true, parser.parse(command_line, &errors));
+        EXPECT_EQ(2, static_cast<int64_t>(parser["foo"]));
+        EXPECT_EQ(2, static_cast<int64_t>(option));
+        EXPECT_EQ(2, parser.argc());
+        EXPECT_EQ(0, parser.remaining_argc());
+        EXPECT_EQ(0, errors.length());
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * Test that the parser correctly detects a missing range value.
+ */
+TEST(range_option_test, parse_range_no_value)
+{
+    auto parser = qflags::parser();
+
+    char const* argv[] = { "--foo" };
+    auto command_line = qflags::command_line(_countof(argv), argv);
+
+    auto option = qflags::range_option("foo", { 0 }, 0);
+
+    {
+        std::string errors;
+
+        ASSERT_EQ(true, parser.add_argument(&option, &errors));
+        EXPECT_EQ(0, errors.length());
+    }
+
+    {
+        std::string errors;
+
+        EXPECT_EQ(false, parser.parse(command_line, &errors));
+        EXPECT_NE(0, errors.length());
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * Test that the parser correctly requires that range_option is set to one of
+ * its value ranges.
+ */
+TEST(range_option_test, parse_invalid_range_enumerated)
+{
+    auto parser = qflags::parser();
+
+    char const* argv[] = { "--foo", "1" };
+    auto command_line = qflags::command_line(_countof(argv), argv);
+
+    auto option = qflags::range_option("foo", { 0 }, 0);
+
+    {
+        std::string errors;
+
+        ASSERT_EQ(true, parser.add_argument(&option, &errors));
+        EXPECT_EQ(0, errors.length());
+    }
+
+    {
+        std::string errors;
+
+        ASSERT_EQ(false, parser.parse(command_line, &errors));
+        EXPECT_NE(0, errors.length());
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * Test that the parser correctly requires that range_option is set to a value
+ * within its minimum and maximum values.
+ */
+TEST(range_option_test, parse_invalid_range_bounded)
+{
+    auto parser = qflags::parser();
+
+    auto option = qflags::range_option("foo", -1, 1, 0);
+
+    {
+        std::string errors;
+
+        ASSERT_EQ(true, parser.add_argument(&option, &errors));
+        EXPECT_EQ(0, errors.length());
+    }
+
+    {
+        char const* argv[] = { "--foo", "-2" };
+        auto command_line = qflags::command_line(_countof(argv), argv);
+
+        std::string errors;
+
+        ASSERT_EQ(false, parser.parse(command_line, &errors));
+        EXPECT_NE(0, errors.length());
+    }
+
+    {
+        char const* argv[] = { "--foo", "2" };
+        auto command_line = qflags::command_line(_countof(argv), argv);
+
+        std::string errors;
+
+        ASSERT_EQ(false, parser.parse(command_line, &errors));
+        EXPECT_NE(0, errors.length());
+    }
+}

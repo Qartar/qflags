@@ -32,6 +32,9 @@ TEST(choice_option_test, capabilities)
  */
 TEST(choice_option_test, parameters)
 {
+    EXPECT_DEBUG_DEATH(qflags::choice_option("foo", {}, "bar"), "")
+        << "Failed to assert when no choice values were provided.";
+
     EXPECT_DEBUG_DEATH(qflags::choice_option("foo", { "bar" }, "baz"), "")
         << "Failed to assert when default value is not a choice value.";
 

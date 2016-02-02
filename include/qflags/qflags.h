@@ -338,4 +338,30 @@ class choice_option
     virtual int parse(int argc, char const* const* argv, std::string* errors) override;
 };
 
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * @class range_option
+ */
+class range_option
+    : public integer_option
+{
+  public:
+    range_option(char const* name,
+                 std::initializer_list<int64_t>&& choices,
+                 int64_t default_value);
+
+    range_option(char const* name,
+                 int64_t minimum_value,
+                 int64_t maximum_value,
+                 int64_t default_value);
+
+  protected:
+    int64_t _minimum_value;
+    int64_t _maximum_value;
+    std::set<int64_t> _choices;
+
+  protected:
+    virtual int parse(int argc, char const* const* argv, std::string* errors) override;
+};
+
 } // namespace qflags
