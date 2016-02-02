@@ -55,6 +55,7 @@ set(SOURCES
     src/flag.cpp
     src/string_option.cpp
     src/integer_option.cpp
+    src/choice_option.cpp
     src/parser.cpp
     src/command_line.cpp
 )
@@ -77,6 +78,7 @@ if(TARGET gtest)
                    test/flag.cpp
                    test/string_option.cpp
                    test/integer_option.cpp
+                   test/choice_option.cpp
                    test/parser.cpp)
 
     target_link_libraries(qflags_test qflags gtest gtest_main)

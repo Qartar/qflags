@@ -6,6 +6,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <set>
 #include <map>
 
 namespace qflags {
@@ -309,6 +310,29 @@ class integer_option
   protected:
     int64_t _value_integer;
     int64_t _default_value;
+
+  protected:
+    virtual int parse(int argc, char const* const* argv, std::string* errors) override;
+};
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * @class choice_option
+ */
+class choice_option
+    : public string_option
+{
+  public:
+    choice_option(char const* name,
+                  std::initializer_list<char const*>&& choices,
+                  char const* default_value);
+
+    choice_option(char const* name,
+                  std::set<std::string> const& choices,
+                  char const* default_value);
+
+  protected:
+    std::set<std::string> _choices;
 
   protected:
     virtual int parse(int argc, char const* const* argv, std::string* errors) override;

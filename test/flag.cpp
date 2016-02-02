@@ -116,10 +116,12 @@ TEST(flag_test, parse_short_flags_groups)
     auto flag_d = qflags::flag("flag_d", "d");
     auto flag_e = qflags::flag("flag_e", "e");
     auto flag_f = qflags::flag("flag_f", "f");
+    auto flag_g = qflags::flag("flag_g");
 
     {
         std::string errors;
 
+        ASSERT_EQ(true, parser.add_argument(&flag_g, &errors));
         ASSERT_EQ(true, parser.add_argument(&flag_f, &errors));
         ASSERT_EQ(true, parser.add_argument(&flag_e, &errors));
         ASSERT_EQ(true, parser.add_argument(&flag_d, &errors));
@@ -139,6 +141,7 @@ TEST(flag_test, parse_short_flags_groups)
         EXPECT_EQ(true, static_cast<bool>(parser["flag_d"]));
         EXPECT_EQ(false, static_cast<bool>(parser["flag_e"]));
         EXPECT_EQ(true, static_cast<bool>(parser["flag_f"]));
+        EXPECT_EQ(false, static_cast<bool>(parser["flag_g"]));
         EXPECT_EQ(2, parser.argc());
         EXPECT_EQ(0, parser.remaining_argc());
         EXPECT_EQ(0, errors.length());
