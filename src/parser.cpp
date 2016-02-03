@@ -86,8 +86,8 @@ bool parser::parse(command_line const& command_line, std::string* errors)
             int count = 0;
 
             for (auto iter : _arguments) {
-                count = iter.second->parse(static_cast<int>(argv.size()),
-                                           argv.data(),
+                count = iter.second->parse(static_cast<int>(argv.size() - ii),
+                                           argv.data() + ii,
                                            errors);
 
                 if (count) {

@@ -38,3 +38,27 @@ TEST(parser_test, parse_no_arguments)
     EXPECT_EQ(3, parser.remaining_argc());
     EXPECT_EQ(0, errors.length());
 }
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * Test that the parser can handle a command list with non-option arguments.
+ */
+TEST(parser_test, parse_skipped_arguments)
+{
+    char const* argv[] = { "one", "--two", "three" };
+    auto command_line = qflags::command_line(_countof(argv), argv);
+
+    auto parser = qflags::parser();
+
+    std::string errors;
+
+    auto flag = qflags::flag("two");
+
+    ASSERT_EQ(true, parser.add_argument(&flag, &errors));
+    ASSERT_EQ(0, errors.length());
+
+    EXPECT_EQ(true, parser.parse(command_line, &errors));
+    EXPECT_EQ(3, parser.argc());
+    EXPECT_EQ(2, parser.remaining_argc());
+    EXPECT_EQ(0, errors.length());
+}
