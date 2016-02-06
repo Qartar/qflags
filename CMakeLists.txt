@@ -91,3 +91,9 @@ if(TARGET gtest)
                        POST_BUILD
                        COMMAND qflags_test)
 endif()
+
+################################################################################
+
+add_executable(levenshtein sample/levenshtein.cpp)
+
+target_link_libraries(levenshtein qflags)
