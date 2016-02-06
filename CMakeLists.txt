@@ -54,6 +54,7 @@ set(SOURCES
     src/argument.cpp
     src/flag.cpp
     src/string_option.cpp
+    src/boolean_option.cpp
     src/integer_option.cpp
     src/choice_option.cpp
     src/range_option.cpp
@@ -78,6 +79,7 @@ if(TARGET gtest)
                    test/command_line.cpp
                    test/flag.cpp
                    test/string_option.cpp
+                   test/boolean_option.cpp
                    test/integer_option.cpp
                    test/choice_option.cpp
                    test/range_option.cpp

@@ -293,6 +293,30 @@ class string_option
 
 ////////////////////////////////////////////////////////////////////////////////
 /**
+ * @class boolean_option
+ */
+class boolean_option
+    : public option
+{
+  public:
+    boolean_option(char const* name, bool default_value = false);
+
+    virtual bool is_boolean() const final { return true; }
+
+    //! @return
+    //!     argument value as a boolean
+    bool value_boolean() const override { return _value_boolean; }
+
+  protected:
+      bool _value_boolean;
+      bool _default_value;
+
+  protected:
+    virtual int parse(int argc, char const* const* argv, std::string* errors) override;
+};
+
+////////////////////////////////////////////////////////////////////////////////
+/**
  * @class integer_option
  */
 class integer_option
