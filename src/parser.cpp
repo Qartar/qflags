@@ -81,6 +81,13 @@ bool parser::parse(command_line const& command_line, std::string* errors)
             argv.erase(argv.cbegin() + ii);
             continue;
         }
+        // Arg is an argument terminator: "--"
+        else if (argv[ii][0] == '-' && argv[ii][1] == '-' && argv[ii][2] == '\0') {
+
+            // Remove terminator from remaining arguments and stop parsing.
+            argv.erase(argv.cbegin() + ii);
+            break;
+        }
         // Arg is a long flag or option.
         else if (argv[ii][0] == '-' && argv[ii][1] == '-') {
             int count = 0;
