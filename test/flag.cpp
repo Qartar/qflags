@@ -23,6 +23,7 @@ TEST(flag_test, capabilities)
 
     EXPECT_EQ(false, static_cast<bool>(flag));
     EXPECT_DEATH(static_cast<int64_t>(flag), "");
+    EXPECT_DEATH(static_cast<int>(flag), "");
     EXPECT_DEATH(static_cast<std::string>(flag), "");
 }
 

@@ -138,6 +138,10 @@ class argument
     //! User-defined conversions to an integer value
     operator int64_t() const { return value_integer(); }
 
+    //! User-defined conversions to an integer value. This extra method is
+    //! necessary because a cast to int otherwise chooses the bool overload.
+    operator int() const { return static_cast<int>(value_integer()); }
+
     //! User-defined conversions to a string value
     operator std::string const&() const { return value_string(); }
 

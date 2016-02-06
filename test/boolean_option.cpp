@@ -23,6 +23,7 @@ TEST(boolean_option_test, capabilities)
 
     EXPECT_EQ(false, static_cast<bool>(option));
     EXPECT_DEATH(static_cast<int64_t>(option), "");
+    EXPECT_DEATH(static_cast<int>(option), "");
     EXPECT_EQ("false", static_cast<std::string>(option));
 }
 
