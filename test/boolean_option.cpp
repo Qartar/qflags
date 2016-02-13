@@ -64,13 +64,7 @@ TEST_P(parse_boolean, p)
 
     auto option = qflags::boolean_option("foo");
 
-    {
-        std::string errors;
-
-        ASSERT_EQ(true, parser.add_argument(&option, &errors));
-        EXPECT_EQ(0, errors.length());
-    }
-
+    ASSERT_EQ(true, parser.add_argument(&option));
     {
         std::string errors;
 
@@ -115,13 +109,7 @@ TEST(boolean_option_test, parse_boolean_no_value)
 
     auto option = qflags::boolean_option("foo");
 
-    {
-        std::string errors;
-
-        ASSERT_EQ(true, parser.add_argument(&option, &errors));
-        EXPECT_EQ(0, errors.length());
-    }
-
+    ASSERT_EQ(true, parser.add_argument(&option));
     {
         std::string errors;
 

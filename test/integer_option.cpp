@@ -64,13 +64,7 @@ TEST_P(parse_integer, p)
 
     auto option = qflags::integer_option("foo");
 
-    {
-        std::string errors;
-
-        ASSERT_EQ(true, parser.add_argument(&option, &errors));
-        EXPECT_EQ(0, errors.length());
-    }
-
+    ASSERT_EQ(true, parser.add_argument(&option));
     {
         std::string errors;
 
@@ -125,13 +119,7 @@ TEST(integer_option_test, parse_integer_no_value)
 
     auto option = qflags::integer_option("foo");
 
-    {
-        std::string errors;
-
-        ASSERT_EQ(true, parser.add_argument(&option, &errors));
-        EXPECT_EQ(0, errors.length());
-    }
-
+    ASSERT_EQ(true, parser.add_argument(&option));
     {
         std::string errors;
 
@@ -158,13 +146,7 @@ TEST_P(parse_integer_bad_value, p)
 
     auto option = qflags::integer_option("foo");
 
-    {
-        std::string errors;
-
-        ASSERT_EQ(true, parser.add_argument(&option, &errors));
-        EXPECT_EQ(0, errors.length());
-    }
-
+    ASSERT_EQ(true, parser.add_argument(&option));
     {
         std::string errors;
 

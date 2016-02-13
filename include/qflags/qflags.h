@@ -179,9 +179,7 @@ class parser
     //! add an argument to the parser
     //! @param[in] arg
     //!     an argument, a reference is held by the parser
-    //! @param[out] errors
-    //!     a string describing any errors that occurred
-    bool add_argument(argument* arg, std::string* errors);
+    bool add_argument(argument* arg);
 
     /**
      * parse the command line.

@@ -40,13 +40,7 @@ TEST(flag_test, parse_short_flag)
 
     auto flag = qflags::flag("flag", "f");
 
-    {
-        std::string errors;
-
-        ASSERT_EQ(true, parser.add_argument(&flag, &errors));
-        EXPECT_EQ(0, errors.length());
-    }
-
+    ASSERT_EQ(true, parser.add_argument(&flag));
     {
         std::string errors;
 
@@ -74,15 +68,9 @@ TEST(flag_test, parse_short_flags)
     auto flag_i = qflags::flag("flag_i", "i");
     auto flag_a = qflags::flag("flag_a", "a");
 
-    {
-        std::string errors;
-
-        ASSERT_EQ(true, parser.add_argument(&flag_m, &errors));
-        ASSERT_EQ(true, parser.add_argument(&flag_i, &errors));
-        ASSERT_EQ(true, parser.add_argument(&flag_a, &errors));
-        EXPECT_EQ(0, errors.length());
-    }
-
+    ASSERT_EQ(true, parser.add_argument(&flag_m));
+    ASSERT_EQ(true, parser.add_argument(&flag_i));
+    ASSERT_EQ(true, parser.add_argument(&flag_a));
     {
         std::string errors;
 
@@ -119,19 +107,13 @@ TEST(flag_test, parse_short_flags_groups)
     auto flag_f = qflags::flag("flag_f", "f");
     auto flag_g = qflags::flag("flag_g");
 
-    {
-        std::string errors;
-
-        ASSERT_EQ(true, parser.add_argument(&flag_g, &errors));
-        ASSERT_EQ(true, parser.add_argument(&flag_f, &errors));
-        ASSERT_EQ(true, parser.add_argument(&flag_e, &errors));
-        ASSERT_EQ(true, parser.add_argument(&flag_d, &errors));
-        ASSERT_EQ(true, parser.add_argument(&flag_a, &errors));
-        ASSERT_EQ(true, parser.add_argument(&flag_b, &errors));
-        ASSERT_EQ(true, parser.add_argument(&flag_c, &errors));
-        EXPECT_EQ(0, errors.length());
-    }
-
+    ASSERT_EQ(true, parser.add_argument(&flag_g));
+    ASSERT_EQ(true, parser.add_argument(&flag_f));
+    ASSERT_EQ(true, parser.add_argument(&flag_e));
+    ASSERT_EQ(true, parser.add_argument(&flag_d));
+    ASSERT_EQ(true, parser.add_argument(&flag_a));
+    ASSERT_EQ(true, parser.add_argument(&flag_b));
+    ASSERT_EQ(true, parser.add_argument(&flag_c));
     {
         std::string errors;
 
@@ -162,13 +144,7 @@ TEST(flag_test, parse_long_flag)
 
     auto flag = qflags::flag("flag", "f");
 
-    {
-        std::string errors;
-
-        ASSERT_EQ(true, parser.add_argument(&flag, &errors));
-        EXPECT_EQ(0, errors.length());
-    }
-
+    ASSERT_EQ(true, parser.add_argument(&flag));
     {
         std::string errors;
 
@@ -215,15 +191,9 @@ TEST(flag_test, parse_invalid_short_flag_group)
     auto flag_b = qflags::flag("flag_b", "b");
     auto flag_c = qflags::flag("flag_c", "c");
 
-    {
-        std::string errors;
-
-        ASSERT_EQ(true, parser.add_argument(&flag_a, &errors));
-        ASSERT_EQ(true, parser.add_argument(&flag_b, &errors));
-        ASSERT_EQ(true, parser.add_argument(&flag_c, &errors));
-        EXPECT_EQ(0, errors.length());
-    }
-
+    ASSERT_EQ(true, parser.add_argument(&flag_a));
+    ASSERT_EQ(true, parser.add_argument(&flag_b));
+    ASSERT_EQ(true, parser.add_argument(&flag_c));
     {
         std::string errors;
 
@@ -245,13 +215,7 @@ TEST(flag_test, parse_multibyte_short_flag)
 
     auto flag = qflags::flag("flag", u8"\u010338");
 
-    {
-        std::string errors;
-
-        ASSERT_EQ(true, parser.add_argument(&flag, &errors));
-        EXPECT_EQ(0, errors.length());
-    }
-
+    ASSERT_EQ(true, parser.add_argument(&flag));
     {
         std::string errors;
 
@@ -279,15 +243,9 @@ TEST(flag_test, parse_multibyte_short_flags)
     auto raida = qflags::flag("raida", u8"\u010342");
     auto aihvus = qflags::flag("aihvus", u8"\u010334");
 
-    {
-        std::string errors;
-
-        ASSERT_EQ(true, parser.add_argument(&thiuth, &errors));
-        ASSERT_EQ(true, parser.add_argument(&raida, &errors));
-        ASSERT_EQ(true, parser.add_argument(&aihvus, &errors));
-        EXPECT_EQ(0, errors.length());
-    }
-
+    ASSERT_EQ(true, parser.add_argument(&thiuth));
+    ASSERT_EQ(true, parser.add_argument(&raida));
+    ASSERT_EQ(true, parser.add_argument(&aihvus));
     {
         std::string errors;
 

@@ -138,8 +138,8 @@ int main(int argc, char* argv[])
     std::string errors;
     bool result = true;
 
-    result &= parser.add_argument(&ignore_case, &errors);
-    result &= parser.add_argument(&print_matrix, &errors);
+    result &= parser.add_argument(&ignore_case);
+    result &= parser.add_argument(&print_matrix);
     result &= parser.parse(command_line, &errors);
 
     fprintf(stdout, "%s", errors.c_str());

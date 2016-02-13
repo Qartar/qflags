@@ -18,15 +18,12 @@ parser::parser() :
 /**
  *
  */
-bool parser::add_argument(argument* arg, std::string* errors)
+bool parser::add_argument(argument* arg)
 {
     assert(arg && "arg cannot be null!");
-    assert(errors && "errors cannot be null!");
 
-    if (!arg || !errors) {
-        if (errors) {
-            errors->append("Error: Invalid parameter, arg cannot be null!\n");
-        }
+    if (!arg) {
+        fprintf(stderr, "Error: Invalid parameter, arg cannot be null!\n");
         return false;
     }
 
@@ -35,16 +32,16 @@ bool parser::add_argument(argument* arg, std::string* errors)
     if (iter != _arguments.cend()) {
         // Same argument being added twice.
         if (iter->second == arg) {
-            errors->append("Warning: The argument with name '");
-            errors->append(arg->name());
-            errors->append("' has already been added to the parser.\n");
+            fprintf(stderr,
+                    "Warning: The argument with name '%s' has already been added to the parser.\n",
+                    arg->name().c_str());
             return true;
         }
         // Another argument being added with the same name.
         else {
-            errors->append("Error: An argument with name '");
-            errors->append(arg->name());
-            errors->append("' has already been added to the parser.\n");
+            fprintf(stderr,
+                    "Error: An argument with name '%s' has already been added to the parser.\n",
+                    arg->name().c_str());
             return false;
         }
     }

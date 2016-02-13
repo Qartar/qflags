@@ -54,8 +54,7 @@ TEST(parser_test, parse_skipped_arguments)
 
     auto flag = qflags::flag("two");
 
-    ASSERT_EQ(true, parser.add_argument(&flag, &errors));
-    ASSERT_EQ(0, errors.length());
+    ASSERT_EQ(true, parser.add_argument(&flag));
 
     EXPECT_EQ(true, parser.parse(command_line, &errors));
     EXPECT_EQ(3, parser.argc());
@@ -79,9 +78,8 @@ TEST(parser_test, parse_terminator_argument)
     auto foo = qflags::flag("foo");
     auto bar = qflags::flag("bar");
 
-    ASSERT_EQ(true, parser.add_argument(&foo, &errors));
-    ASSERT_EQ(true, parser.add_argument(&bar, &errors));
-    ASSERT_EQ(0, errors.length());
+    ASSERT_EQ(true, parser.add_argument(&foo));
+    ASSERT_EQ(true, parser.add_argument(&bar));
 
     EXPECT_EQ(true, parser.parse(command_line, &errors));
     EXPECT_EQ(true, static_cast<bool>(foo));
