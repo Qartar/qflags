@@ -391,3 +391,23 @@ class range_option
 };
 
 } // namespace qflags
+
+#if defined(QFLAGS_STATIC)
+
+#   define QFLAGS_INLINE
+
+#else //!defined(QFLAGS_STATIC)
+
+// Include implementation for use as a header-only library.
+#   define QFLAGS_INLINE inline
+#   include <qflags/command_line.hpp>
+#   include <qflags/argument.hpp>
+#   include <qflags/flag.hpp>
+#   include <qflags/string_option.hpp>
+#   include <qflags/boolean_option.hpp>
+#   include <qflags/integer_option.hpp>
+#   include <qflags/choice_option.hpp>
+#   include <qflags/range_option.hpp>
+#   include <qflags/parser.hpp>
+
+#endif //!defined(QFLAGS_STATIC)

@@ -48,6 +48,16 @@ endif()
 
 set(INCLUDES
     include/qflags/qflags.h
+
+    include/qflags/argument.hpp
+    include/qflags/flag.hpp
+    include/qflags/string_option.hpp
+    include/qflags/boolean_option.hpp
+    include/qflags/integer_option.hpp
+    include/qflags/choice_option.hpp
+    include/qflags/range_option.hpp
+    include/qflags/parser.hpp
+    include/qflags/command_line.hpp
 )
 
 set(SOURCES
@@ -62,19 +72,49 @@ set(SOURCES
     src/command_line.cpp
 )
 
-add_library(qflags STATIC
+add_library(qflags-static STATIC
     ${INCLUDES}
     ${SOURCES}
 )
 
-target_include_directories(qflags
+target_include_directories(qflags-static
     PUBLIC
+        include
+)
+
+target_compile_definitions(qflags-static
+    PUBLIC
+        -DQFLAGS_STATIC
+)
+
+################################################################################
+
+add_library(qflags INTERFACE)
+
+target_include_directories(qflags
+    INTERFACE
         include
 )
 
 ################################################################################
 
 if(TARGET gtest)
+    add_executable(qflags-static_test
+                   test/command_line.cpp
+                   test/flag.cpp
+                   test/string_option.cpp
+                   test/boolean_option.cpp
+                   test/integer_option.cpp
+                   test/choice_option.cpp
+                   test/range_option.cpp
+                   test/parser.cpp)
+
+    target_link_libraries(qflags-static_test qflags-static gtest gtest_main)
+
+    add_custom_command(TARGET qflags-static_test
+                       POST_BUILD
+                       COMMAND qflags-static_test)
+
     add_executable(qflags_test
                    test/command_line.cpp
                    test/flag.cpp
@@ -90,10 +130,11 @@ if(TARGET gtest)
     add_custom_command(TARGET qflags_test
                        POST_BUILD
                        COMMAND qflags_test)
+
 endif()
 
 ################################################################################
 
 add_executable(levenshtein sample/levenshtein.cpp)
 
-target_link_libraries(levenshtein qflags)
+target_link_libraries(levenshtein qflags-static)
