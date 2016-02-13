@@ -106,19 +106,19 @@ class argument
 
     //! @return
     //!     true if the argument is a flag
-    virtual bool is_flag() const;
+    virtual bool is_flag() const { return false; }
 
     //! @return
     //!     true if the argument is implicitly convertible to a boolean
-    virtual bool is_boolean() const;
+    virtual bool is_boolean() const { return false; }
 
     //! @return
     //!     true if the argument is implicitly convertible to an integer
-    virtual bool is_integer() const;
+    virtual bool is_integer() const { return false; }
 
     //! @return
     //!     true if the argument is implicitly convertible to a string
-    virtual bool is_string() const;
+    virtual bool is_string() const { return false; }
 
     //! @return
     //!     the argument value as a boolean if `is_boolean` is true
