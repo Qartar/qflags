@@ -8,15 +8,39 @@ set(GOOGLETEST_PATH ${CMAKE_SOURCE_DIR}/googletest)
 if(IS_DIRECTORY ${GOOGLETEST_PATH})
     add_subdirectory(${GOOGLETEST_PATH})
 endif()
+ 
+# If the toolchain was set to use Microsoft's Clang/C2 compilers then force
+# gmock and gtest to use the normal C1/C2 compiler because otherwise all of
+# their Microsoft specific configuration would need to be redone.
+if(MSVC AND ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
+    foreach(target
+            gtest gtest_main gmock gmock_main)
+
+        set_target_properties(${target} PROPERTIES VS_PLATFORM_TOOLSET_OVERRIDE "v140")
+    endforeach()
+endif()
 
 ################################################################################
 
-if(${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
-    # /W4   Warning level 4
-    # /WX   Warnings as errors
-    # /MP   Multi-process compilation
-    # /sdl  Additional security checks
-    set(compiler_flags "/W4 /WX /MP /sdl")
+if(MSVC)
+    if(${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
+        # /W4       Warning level 4
+        # /WX       Warnings as errors
+        # /MP       Multi-process compilation
+        # /sdl      Additional security checks
+        set(compiler_flags "/W4 /WX /MP /sdl")
+
+    elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL Clang)
+        # -Wall     Enable all warnings
+        # -Werror   Warnings as errors
+        # /MP       Multi-process compilation
+        # /sdl      Additional security checks
+        set(compiler_flags "-Wall -Werror /MP /sdl")
+
+        # Set gmock and gtest as system headers in order to suppress warnings.
+        set(compiler_flags "${compiler_flags} --system-header-prefix=gtest/")
+        set(compiler_flags "${compiler_flags} --system-header-prefix=gmock/")
+    endif()
 
     # For MSVC, CMake sets certain flags to defaults we want to override.
     # This replacement code is taken from sample in the CMake Wiki at
@@ -93,37 +117,40 @@ target_include_directories(qflags
 ################################################################################
 
 if(TARGET gtest)
-    add_executable(qflags-static_test
-                   test/command_line.cpp
-                   test/flag.cpp
-                   test/string_option.cpp
-                   test/boolean_option.cpp
-                   test/integer_option.cpp
-                   test/choice_option.cpp
-                   test/range_option.cpp
-                   test/parser.cpp)
+    set(TEST_SOURCES
+        test/command_line.cpp
+        test/flag.cpp
+        test/string_option.cpp
+        test/boolean_option.cpp
+        test/integer_option.cpp
+        test/choice_option.cpp
+        test/range_option.cpp
+        test/parser.cpp
+    )
 
-    target_link_libraries(qflags-static_test qflags-static gtest gtest_main)
-
-    add_custom_command(TARGET qflags-static_test
-                       POST_BUILD
-                       COMMAND qflags-static_test)
-
-    add_executable(qflags_test
-                   test/command_line.cpp
-                   test/flag.cpp
-                   test/string_option.cpp
-                   test/boolean_option.cpp
-                   test/integer_option.cpp
-                   test/choice_option.cpp
-                   test/range_option.cpp
-                   test/parser.cpp)
+    add_executable(qflags_test ${TEST_SOURCES})
 
     target_link_libraries(qflags_test qflags gtest gtest_main)
 
-    add_custom_command(TARGET qflags_test
-                       POST_BUILD
-                       COMMAND qflags_test)
+    add_executable(qflags-static_test ${TEST_SOURCES})
+
+    target_link_libraries(qflags-static_test qflags-static gtest gtest_main)
+
+    foreach(target
+            qflags_test qflags-static_test)
+
+        add_custom_command(TARGET ${target}
+                           POST_BUILD
+                           COMMAND ${target})
+
+        # Disable unused value warnings when using Clang
+        if(${CMAKE_CXX_COMPILER_ID} STREQUAL Clang)
+            target_compile_options(${target}
+                PUBLIC
+                    -Wno-unused-value
+            )
+        endif()
+    endforeach()
 
 endif()
 
