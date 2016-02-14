@@ -17,11 +17,11 @@ TEST(integer_option_test, capabilities)
     EXPECT_EQ(true, option.is_integer());
     EXPECT_EQ(true, option.is_string());
 
-    EXPECT_DEATH(option.value_boolean(), "");
+    EXPECT_THROW(option.value_boolean(), std::logic_error);
     EXPECT_EQ(0, option.value_integer());
     EXPECT_EQ("0", option.value_string());
 
-    EXPECT_DEATH(static_cast<bool>(option), "");
+    EXPECT_THROW(static_cast<bool>(option), std::logic_error);
     EXPECT_EQ(0, static_cast<int64_t>(option));
     EXPECT_EQ(0, static_cast<int>(option));
     EXPECT_EQ("0", static_cast<std::string>(option));

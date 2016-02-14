@@ -18,13 +18,13 @@ TEST(flag_test, capabilities)
     EXPECT_EQ(false, flag.is_string());
 
     EXPECT_EQ(false, flag.value_boolean());
-    EXPECT_DEATH(flag.value_integer(), "");
-    EXPECT_DEATH(flag.value_string(), "");
+    EXPECT_THROW(flag.value_integer(), std::logic_error);
+    EXPECT_THROW(flag.value_string(), std::logic_error);
 
     EXPECT_EQ(false, static_cast<bool>(flag));
-    EXPECT_DEATH(static_cast<int64_t>(flag), "");
-    EXPECT_DEATH(static_cast<int>(flag), "");
-    EXPECT_DEATH(static_cast<std::string>(flag), "");
+    EXPECT_THROW(static_cast<int64_t>(flag), std::logic_error);
+    EXPECT_THROW(static_cast<int>(flag), std::logic_error);
+    EXPECT_THROW(static_cast<std::string>(flag), std::logic_error);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

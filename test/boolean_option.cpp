@@ -18,12 +18,12 @@ TEST(boolean_option_test, capabilities)
     EXPECT_EQ(true, option.is_string());
 
     EXPECT_EQ(false, option.value_boolean());
-    EXPECT_DEATH(option.value_integer(), "");
+    EXPECT_THROW(option.value_integer(), std::logic_error);
     EXPECT_EQ("false", option.value_string());
 
     EXPECT_EQ(false, static_cast<bool>(option));
-    EXPECT_DEATH(static_cast<int64_t>(option), "");
-    EXPECT_DEATH(static_cast<int>(option), "");
+    EXPECT_THROW(static_cast<int64_t>(option), std::logic_error);
+    EXPECT_THROW(static_cast<int>(option), std::logic_error);
     EXPECT_EQ("false", static_cast<std::string>(option));
 }
 
