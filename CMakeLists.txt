@@ -18,6 +18,12 @@ if(${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
     # /sdl  Additional security checks
     set(compiler_flags "/W4 /WX /MP /sdl")
 
+    # Using _HAS_EXCEPTIONS=0 with MSVC 12 or earlier causes unreachable
+    # code warnings in xtree so the warning is disabled here in that case.
+    if (NOT MSVC_VERSION GREATER 1800)
+        set(compiler_flags "${compiler_flags} /wd4702")
+    endif()
+
     # For MSVC, CMake sets certain flags to defaults we want to override.
     # This replacement code is taken from sample in the CMake Wiki at
     # http://www.cmake.org/Wiki/CMake_FAQ#Dynamic_Replace.
