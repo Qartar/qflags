@@ -210,10 +210,10 @@ TEST(flag_test, parse_multibyte_short_flag)
 {
     auto parser = qflags::parser();
 
-    wchar_t const* argv[] = { L"-\u010338" };
+    wchar_t const* argv[] = { L"-\U00010338" };
     auto command_line = qflags::command_line(_countof(argv), argv);
 
-    auto flag = qflags::flag("flag", u8"\u010338");
+    auto flag = qflags::flag("flag", "\xf0\x90\x8c\xb8");
 
     ASSERT_EQ(true, parser.add_argument(&flag));
     {
@@ -236,12 +236,12 @@ TEST(flag_test, parse_multibyte_short_flags)
 {
     auto parser = qflags::parser();
 
-    wchar_t const* argv[] = { L"-\u010338\u010342\u010334" };
+    wchar_t const* argv[] = { L"-\U00010338\U00010342\U00010334" };
     auto command_line = qflags::command_line(_countof(argv), argv);
 
-    auto thiuth = qflags::flag("thiuth", u8"\u010338");
-    auto raida = qflags::flag("raida", u8"\u010342");
-    auto aihvus = qflags::flag("aihvus", u8"\u010334");
+    auto thiuth = qflags::flag("thiuth", "\xf0\x90\x8c\xb8");
+    auto raida = qflags::flag("raida", "\xf0\x90\x8d\x82");
+    auto aihvus = qflags::flag("aihvus", "\xf0\x90\x8c\xb4");
 
     ASSERT_EQ(true, parser.add_argument(&thiuth));
     ASSERT_EQ(true, parser.add_argument(&raida));
