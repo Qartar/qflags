@@ -75,6 +75,7 @@ set(INCLUDES
     include/qflags/choice_option.hpp
     include/qflags/range_option.hpp
     include/qflags/parser.hpp
+    include/qflags/command.hpp
     include/qflags/command_line.hpp
 )
 
@@ -87,6 +88,7 @@ set(SOURCES
     src/choice_option.cpp
     src/range_option.cpp
     src/parser.cpp
+    src/command.cpp
     src/command_line.cpp
 )
 
@@ -126,6 +128,7 @@ if(TARGET gtest)
         test/choice_option.cpp
         test/range_option.cpp
         test/parser.cpp
+        test/command.cpp
     )
 
     add_executable(qflags_test ${TEST_SOURCES})

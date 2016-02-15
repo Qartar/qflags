@@ -109,6 +109,10 @@ class argument
     virtual bool is_flag() const { return false; }
 
     //! @return
+    //!     true if the argument is a command
+    virtual bool is_command() const { return false; }
+
+    //! @return
     //!     true if the argument is implicitly convertible to a boolean
     virtual bool is_boolean() const { return false; }
 
@@ -189,6 +193,9 @@ class parser
     //!
     argument const& operator[](std::string const& name) const;
 
+    //!
+    argument const& operator[](char const* name) const;
+
     //! @return
     //!     number of argument strings.
     int argc() const { return _command_line.argc(); }
@@ -221,8 +228,34 @@ class parser
     std::vector<argument*> _flags;
 
   private:
-    bool parse_command(int argc, char const* const* argv, std::string* errors);
+    int parse_command(int argc, char const* const* argv, std::string* errors);
     bool parse_flags(char const* arg, std::string* errors);
+};
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * @class command
+ */
+class command
+    : public argument
+    , public parser
+{
+  public:
+    command(char const* name);
+
+    virtual bool is_command() const final { return true; }
+
+    //! Allow commands to be implicitly converted to a boolean.
+    //! @return
+    //!     true
+    virtual bool is_boolean() const final { return true; }
+
+    //! @return
+    //!     true if the command was invoked by the command line
+    virtual bool value_boolean() const final { return _is_set; }
+
+  protected:
+    virtual int parse(int argc, char const* const* argv, std::string* errors) override;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -409,5 +442,6 @@ class range_option
 #   include <qflags/choice_option.hpp>
 #   include <qflags/range_option.hpp>
 #   include <qflags/parser.hpp>
+#   include <qflags/command.hpp>
 
 #endif //!defined(QFLAGS_STATIC)

@@ -13,6 +13,7 @@ TEST(flag_test, capabilities)
     EXPECT_EQ(name, flag.name());
     EXPECT_EQ(false, flag.is_set());
     EXPECT_EQ(true, flag.is_flag());
+    EXPECT_EQ(false, flag.is_command());
     EXPECT_EQ(true, flag.is_boolean());
     EXPECT_EQ(false, flag.is_integer());
     EXPECT_EQ(false, flag.is_string());

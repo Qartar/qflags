@@ -52,8 +52,30 @@ QFLAGS_INLINE bool parser::add_argument(argument* arg)
     if (arg->is_flag()) {
         _flags.push_back(arg);
     }
+    // Add commands to a separate list.
+    if (arg->is_command()) {
+        _commands.push_back(arg);
+    }
 
     return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ *
+ */
+QFLAGS_INLINE argument const& parser::operator[](std::string const& name) const
+{
+    return *(_arguments.at(name));
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ *
+ */
+QFLAGS_INLINE argument const& parser::operator[](char const* name) const
+{
+    return *(_arguments.at(name));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -112,6 +134,23 @@ QFLAGS_INLINE bool parser::parse(command_line const& command_line, std::string* 
                 return false;
             }
         }
+        // Arg is a command or an unbound argument.
+        else {
+            int count = parse_command(static_cast<int>(argv.size() - ii),
+                                      argv.data() + ii,
+                                      errors);
+
+            if (count > 0) {
+                // Only one command is allowed per command-line.
+                argv.erase(argv.cbegin() + ii,
+                           argv.cbegin() + ii + count);
+                break;
+            }
+            else if (count < 0) {
+                return false;
+            }
+            // Arg is an unbound argument.
+        }
 
         ++ii; // Only increment if no arguments were removed.
     }
@@ -122,16 +161,10 @@ QFLAGS_INLINE bool parser::parse(command_line const& command_line, std::string* 
     return true;
 }
 
-//------------------------------------------------------------------------------
-QFLAGS_INLINE argument const& parser::operator[](std::string const& name) const
-{
-    return *(_arguments.at(name));
-}
-
 ////////////////////////////////////////////////////////////////////////////////
-//
-
-//------------------------------------------------------------------------------
+/**
+ *
+ */
 QFLAGS_INLINE bool parser::parse_flags(char const* arg, std::string* errors)
 {
     assert(arg && "flags arg cannot be null!");
@@ -176,6 +209,27 @@ QFLAGS_INLINE bool parser::parse_flags(char const* arg, std::string* errors)
     }
 
     return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ *
+ */
+QFLAGS_INLINE int parser::parse_command(int argc, char const* const* argv, std::string* errors)
+{
+    for (auto command : _commands) {
+        int argn = command->parse(argc, argv, errors);
+        // Parsed succeeded.
+        if (argn > 0) {
+            return argn;
+        }
+        // Parsing failed.
+        else if (argn < 0) {
+            return -1;
+        }
+    }
+    // Failed to match any command.
+    return 0;
 }
 
 } // namespace qflags

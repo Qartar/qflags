@@ -13,6 +13,7 @@ TEST(boolean_option_test, capabilities)
     EXPECT_EQ(name, option.name());
     EXPECT_EQ(false, option.is_set());
     EXPECT_EQ(false, option.is_flag());
+    EXPECT_EQ(false, option.is_command());
     EXPECT_EQ(true, option.is_boolean());
     EXPECT_EQ(false, option.is_integer());
     EXPECT_EQ(true, option.is_string());
