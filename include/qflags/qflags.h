@@ -9,6 +9,13 @@
 #include <set>
 #include <map>
 
+//! Macro used to eliminate compiler warnings generated when formal parameters
+//! are declared but unreferenced; particularly for parameters which are used
+//! in one configuration but not another (e.g. Debug vs Release). MSVC's C1/C2
+//! compiler generates unreferenced variable warnings for variables which are
+//! only referenced in an assert expression however Clang/C2 does not.
+#define QFLAGS_UNREFERENCED_PARAMETER(x) ((void)x)
+
 namespace qflags {
 
 ////////////////////////////////////////////////////////////////////////////////

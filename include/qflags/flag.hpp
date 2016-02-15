@@ -22,6 +22,7 @@ QFLAGS_INLINE int flag::parse(int argc, char const* const* argv, std::string* er
     assert(argv && "argv must not be null!");
     assert(errors && "errors must not be null!");
     assert(argc || (argv[0][0] == '-' && argv[0][1] != '-'));
+    QFLAGS_UNREFERENCED_PARAMETER(errors);
 
     // Check if argument matches flag's long name.
     if (argc && argv[0] == ("--" + _name)) {
