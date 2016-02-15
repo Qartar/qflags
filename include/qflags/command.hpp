@@ -29,7 +29,7 @@ QFLAGS_INLINE int command::parse(int argc, char const* const* argv, std::string*
     }
 
     // Create command line arguments from the remaining arguments.
-    auto args = command_line(argc - 1, argv + 1, nullptr);
+    auto args = command_line(argc, argv, nullptr);
 
     // Attempt to parse the command arguments.
     if (parser::parse(args, errors)) {

@@ -99,7 +99,7 @@ TEST(command_test, parse_command_arguments)
 
         EXPECT_EQ(true, static_cast<bool>(command["bar"]));
         EXPECT_EQ(true, static_cast<bool>(flag));
-        EXPECT_EQ(1, command.argc());
-        EXPECT_EQ(0, command.remaining_argc());
+        EXPECT_EQ(2, command.argc());
+        EXPECT_EQ(1, command.remaining_argc());
     }
 }
