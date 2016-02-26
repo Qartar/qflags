@@ -314,6 +314,25 @@ class option
     option(char const* name, char const* default_value = "") :
         argument(name),
         _value_string(default_value ? default_value : "") {}
+
+    //! Process the command line arguments for this argument as a string. If the
+    //! argument is unmatched or invalid then value_string is not modified.
+    //! @param[in] argc
+    //!     the number of arguments in the argv array
+    //! @param[in] argv
+    //!     an array of arguments starting at this argument's name
+    //! @param[out] value_string
+    //!     the argument value as a string
+    //! @param[out] errors
+    //!     a string describing any errors that occurred during parsing
+    //! @return
+    //!     the number of command line arguments consumed by this argument,
+    //!      0 if the argument is unmatched, or
+    //!     -1 if the argument is invalid.
+    int _parse_string(int argc,
+                      char const* const* argv,
+                      std::string* value_string,
+                      std::string* errors) const;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -355,6 +374,30 @@ class boolean_option
 
   protected:
     virtual int parse(int argc, char const* const* argv, std::string* errors) override;
+
+    //! Process the command line arguments for this argument as a boolean.
+    //! If the argument is invalid then the value stored in value_string
+    //! is undefined. If the argument is unmatched then value_string and
+    //! value_boolean are unmodified.
+    //! @param[in] argc
+    //!     the number of arguments in the argv array
+    //! @param[in] argv
+    //!     an array of arguments starting at this argument's name
+    //! @param[out] value_string
+    //!     the argument value as a string
+    //! @param[out] value_boolean
+    //!     the argument value as a boolean
+    //! @param[out] errors
+    //!     a string describing any errors that occurred during parsing
+    //! @return
+    //!     the number of command line arguments consumed by this argument,
+    //!      0 if the argument is unmatched, or
+    //!     -1 if the argument is invalid.
+    int _parse_boolean(int argc,
+                       char const* const* argv,
+                       std::string* value_string,
+                       bool* value_boolean,
+                       std::string* errors) const;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -379,6 +422,30 @@ class integer_option
 
   protected:
     virtual int parse(int argc, char const* const* argv, std::string* errors) override;
+
+    //! Process the command line arguments for this argument as an integer.
+    //! If the argument is invalid then the value stored in value_string
+    //! is undefined. If the argument is unmatched then value_string and
+    //! value_integer are unmodified.
+    //! @param[in] argc
+    //!     the number of arguments in the argv array
+    //! @param[in] argv
+    //!     an array of arguments starting at this argument's name
+    //! @param[out] value_string
+    //!     the argument value as a string
+    //! @param[out] value_integer
+    //!     the argument value as an integer
+    //! @param[out] errors
+    //!     a string describing any errors that occurred during parsing
+    //! @return
+    //!     the number of command line arguments consumed by this argument,
+    //!      0 if the argument is unmatched, or
+    //!     -1 if the argument is invalid.
+    int _parse_integer(int argc,
+                       char const* const* argv,
+                       std::string* value_string,
+                       int64_t* value_integer,
+                       std::string* errors) const;
 };
 
 ////////////////////////////////////////////////////////////////////////////////

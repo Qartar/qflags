@@ -44,25 +44,25 @@ QFLAGS_INLINE int choice_option::parse(int argc, char const* const* argv, std::s
     assert(errors && "errors must not be null!");
 
     // Check if argument could be parsed as any string.
-    auto string_result = string_option::parse(argc, argv, errors);
-    if (string_result < 2) {
-        return string_result;
+    int argn = _parse_string(argc, argv, &_value_string, errors);
+
+    if (argn > 0) {
+        // Check that the argument value is valid.
+        if (_choices.find(argv[1]) == _choices.cend()) {
+            errors->append("Error: Invalid argument for choice option '");
+            errors->append(_name);
+            errors->append("': '");
+            errors->append(argv[1]);
+            errors->append("'.\n");
+
+            // Leave value undefined.
+            return -1;
+        }
+
+        _is_set = true;
     }
 
-    // Check that the argument value is valid.
-    if (_choices.find(argv[1]) == _choices.cend()) {
-        errors->append("Error: Invalid argument for choice option '");
-        errors->append(_name);
-        errors->append("': '");
-        errors->append(argv[1]);
-        errors->append("'.\n");
-
-        // Reset is_set to false, leave value undefined.
-        _is_set = false;
-        return -1;
-    }
-
-    return string_result;
+    return argn;
 }
 
 } // namespace qflags

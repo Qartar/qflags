@@ -25,43 +25,56 @@ QFLAGS_INLINE int boolean_option::parse(int argc, char const* const* argv, std::
     assert(argv && "argv must not be null!");
     assert(errors && "errors must not be null!");
 
-    // Check if argument matches option's name.
-    if (argc < 1 || argv[0] != ("--" + _name)) {
-        return 0;
+    int argn = _parse_boolean(argc, argv, &_value_string, &_value_boolean, errors);
+
+    _is_set = (argn > 0) ? true : false;
+
+    return argn;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ *
+ */
+QFLAGS_INLINE int boolean_option::_parse_boolean(int argc,
+                                                 char const* const* argv,
+                                                 std::string* value_string,
+                                                 bool* value_boolean,
+                                                 std::string* errors) const
+{
+    assert(argv && "argv must not be null!");
+    assert(errors && "errors must not be null!");
+    assert(value_string && "value_string must not be null!");
+    assert(value_boolean && "value_boolean must not be null!");
+
+    // Parse the argument as a string.
+    int argn = _parse_string(argc, argv, value_string, errors);
+
+    if (argn > 0) {
+        // Check if argument matches any of the following:
+        //  "true" "True" "TRUE" "1"
+        if ((*value_string) == std::string("true") || (*value_string) == std::string("True")
+                || (*value_string) == std::string("TRUE") || (*value_string) == std::string("1")) {
+            (*value_boolean) = true;
+        }
+        // Check if argument matches any of the following:
+        //  "false" "False" "FALSE" "0"
+        else if ((*value_string) == std::string("false") || (*value_string) == std::string("False")
+                 || (*value_string) == std::string("FALSE") || (*value_string) == std::string("0")) {
+            (*value_boolean) = false;
+        }
+        // Invalid argument.
+        else {
+            errors->append("Error: Invalid argument for boolean option '");
+            errors->append(_name);
+            errors->append("': '");
+            errors->append(*value_string);
+            errors->append("'.\n");
+            return -1;
+        }
     }
 
-    if (argc < 2) {
-        errors->append("Error: Insufficient arguments for integer option '");
-        errors->append(_name);
-        errors->append("'.\n");
-        return -1;
-    }
-
-    // Check if argument matches any of the following:
-    //  "true" "True" "TRUE" "1"
-    if (argv[1] == std::string("true") || argv[1] == std::string("True")
-            || argv[1] == std::string("TRUE") || argv[1] == std::string("1")) {
-        _value_boolean = true;
-    }
-    // Check if argument matches any of the following:
-    //  "false" "False" "FALSE" "0"
-    else if (argv[1] == std::string("false") || argv[1] == std::string("False")
-             || argv[1] == std::string("FALSE") || argv[1] == std::string("0")) {
-        _value_boolean = false;
-    }
-    // Invalid argument.
-    else {
-        errors->append("Error: Invalid argument for boolean option '");
-        errors->append(_name);
-        errors->append("': '");
-        errors->append(argv[1]);
-        errors->append("'.\n");
-        return -1;
-    }
-
-    _is_set = true;
-    _value_string = argv[1];
-    return 2;
+    return argn;
 }
 
 } // namespace qflags

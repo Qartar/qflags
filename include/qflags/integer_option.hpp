@@ -25,43 +25,57 @@ QFLAGS_INLINE int integer_option::parse(int argc, char const* const* argv, std::
     assert(argv && "argv must not be null!");
     assert(errors && "errors must not be null!");
 
-    // Check if argument matches option's name.
-    if (argc < 1 || argv[0] != ("--" + _name)) {
-        return 0;
+    int argn = _parse_integer(argc, argv, &_value_string, &_value_integer, errors);
+
+    _is_set = (argn > 0) ? true : false;
+
+    return argn;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ *
+ */
+QFLAGS_INLINE int integer_option::_parse_integer(int argc,
+                                                 char const* const* argv,
+                                                 std::string* value_string,
+                                                 int64_t* value_integer,
+                                                 std::string* errors) const
+{
+    assert(argv && "argv must not be null!");
+    assert(errors && "errors must not be null!");
+    assert(value_string && "value_string must not be null!");
+    assert(value_integer && "value_integer must not be null!");
+
+    // Parse the argument as a string.
+    int argn = _parse_string(argc, argv, value_string, errors);
+
+    if (argn > 0) {
+        // Parse string value as an integer.
+        char* endptr = nullptr;
+        long long value = std::strtoll(value_string->c_str(), &endptr, 0);
+
+        // Detect if parsing failed.
+        if (endptr == value_string->c_str()) {
+            errors->append("Error: Failed to parse argument for integer option '");
+            errors->append(_name);
+            errors->append("': '");
+            errors->append(*value_string);
+            errors->append("'.\n");
+            return -1;
+        } else if (*endptr != '\0') {
+            errors->append("Error: Argument for integer option '");
+            errors->append(_name);
+            errors->append("' contains invalid characters: '");
+            errors->append(endptr);
+            errors->append("'.\n");
+            return -1;
+        }
+
+        (*value_integer) = value;
     }
 
-    if (argc < 2) {
-        errors->append("Error: Insufficient arguments for integer option '");
-        errors->append(_name);
-        errors->append("'.\n");
-        return -1;
-    }
-
-    char* endptr = nullptr;
-    long long value = std::strtoll(argv[1], &endptr, 0);
-
-    // Detect if parsing failed.
-    if (endptr == argv[1]) {
-        errors->append("Error: Failed to parse argument for integer option '");
-        errors->append(_name);
-        errors->append("': '");
-        errors->append(argv[1]);
-        errors->append("'.\n");
-        return -1;
-    } else if (*endptr != '\0') {
-        errors->append("Error: Argument for integer option '");
-        errors->append(_name);
-        errors->append("' contains invalid characters: '");
-        errors->append(endptr);
-        errors->append("'.\n");
-        return -1;
-    }
-
-    _is_set = true;
-    _value_string = argv[1];
-    _value_integer = value;
-
-    return 2;
+    return argn;
 }
 
 } // namespace qflags

@@ -48,26 +48,26 @@ QFLAGS_INLINE int range_option::parse(int argc, char const* const* argv, std::st
     assert(errors && "errors must not be null!");
 
     // Check if argument could be parsed as any integer.
-    auto integer_result = integer_option::parse(argc, argv, errors);
-    if (integer_result < 2 ) {
-        return integer_result;
+    int argn = _parse_integer(argc, argv, &_value_string, &_value_integer, errors);
+
+    if (argn > 0) {
+        // Check that the argument value is valid.
+        if ((_choices.size() && _choices.find(_value_integer) == _choices.cend())
+                || _value_integer < _minimum_value || _value_integer > _maximum_value) {
+            errors->append("Error: Invalid argument for range option '");
+            errors->append(_name);
+            errors->append("': '");
+            errors->append(argv[1]);
+            errors->append("'.\n");
+
+            // Leave value undefined.
+            return -1;
+        }
+
+        _is_set = true;
     }
 
-    // Check that the argument value is valid.
-    if ((_choices.size() && _choices.find(_value_integer) == _choices.cend())
-            || _value_integer < _minimum_value || _value_integer > _maximum_value) {
-        errors->append("Error: Invalid argument for range option '");
-        errors->append(_name);
-        errors->append("': '");
-        errors->append(argv[1]);
-        errors->append("'.\n");
-
-        // Reset is_set to false, leave value undefined.
-        _is_set = false;
-        return -1;
-    }
-
-    return integer_result;
+    return argn;
 }
 
 } // namespace qflags
