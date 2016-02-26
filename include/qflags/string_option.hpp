@@ -12,7 +12,7 @@ namespace qflags {
  * 
  */
 QFLAGS_INLINE string_option::string_option(char const* name,
-                             char const* default_value) :
+                                           char const* default_value) :
     option(name, default_value ? default_value : ""),
     _default_value(default_value ? default_value : "") {}
 
@@ -33,15 +33,6 @@ QFLAGS_INLINE int string_option::parse(int argc, char const* const* argv, std::s
     if (argc < 2) {
         errors->append("Error: Insufficient arguments for string option '");
         errors->append(_name);
-        errors->append("'.\n");
-        return -1;
-    }
-
-    if (argv[1][0] == '-') {
-        errors->append("Error: Invalid argument for string option '");
-        errors->append(_name);
-        errors->append("': '");
-        errors->append(argv[1]);
         errors->append("'.\n");
         return -1;
     }

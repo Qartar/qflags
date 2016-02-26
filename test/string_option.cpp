@@ -90,34 +90,3 @@ TEST(string_option_test, parse_string_no_value)
         EXPECT_NE(0, errors.length());
     }
 }
-
-////////////////////////////////////////////////////////////////////////////////
-/**
- * Test that the parser correctly detects an invalid string value.
- */
-TEST(string_option_test, parse_string_bad_value)
-{
-    auto parser = qflags::parser();
-    auto option = qflags::string_option("foo");
-
-    ASSERT_EQ(true, parser.add_argument(&option));
-    {
-        char const* argv[] = { "--foo", "-bar" };
-        auto command_line = qflags::command_line(_countof(argv), argv);
-
-        std::string errors;
-
-        EXPECT_EQ(false, parser.parse(command_line, &errors));
-        EXPECT_NE(0, errors.length());
-    }
-
-    {
-        char const* argv[] = { "--foo", "--bar" };
-        auto command_line = qflags::command_line(_countof(argv), argv);
-
-        std::string errors;
-
-        EXPECT_EQ(false, parser.parse(command_line, &errors));
-        EXPECT_NE(0, errors.length());
-    }
-}
