@@ -56,6 +56,10 @@ QFLAGS_INLINE int option::_parse_string(int argc,
         (*value_string) = argv[0] + argument_name.length() + 1;
         return 1;
     }
+    // Check that argument exactly matches option's name.
+    else if (argv[0][argument_name.length()] != '\0') {
+        return 0;
+    }
     // Check if there are insufficient arguments.
     else if (argc < 2) {
         errors->append("Error: Insufficient arguments for option '");

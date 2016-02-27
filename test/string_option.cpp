@@ -45,6 +45,29 @@ TEST(string_option_test, default_value)
 
 ////////////////////////////////////////////////////////////////////////////////
 /**
+ * Test that the parser correctly ignores a string argument which contains the
+ * name of a different argument as a prefix.
+ */
+TEST(string_option_test, parse_substring)
+{
+    auto parser = qflags::parser();
+
+    char const* argv[] = { "--foobar", "baz" };
+    auto command_line = qflags::command_line(_countof(argv), argv);
+
+    auto option = qflags::string_option("foo");
+
+    ASSERT_EQ(true, parser.add_argument(&option));
+    {
+        std::string errors;
+
+        ASSERT_EQ(false, parser.parse(command_line, &errors));
+        EXPECT_NE(0, errors.length());
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
  * Test that the parser correctly parses a string value.
  */
 TEST(string_option_test, parse_string)
