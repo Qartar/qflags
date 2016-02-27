@@ -80,16 +80,7 @@ set(INCLUDES
 )
 
 set(SOURCES
-    src/argument.cpp
-    src/flag.cpp
-    src/string_option.cpp
-    src/boolean_option.cpp
-    src/integer_option.cpp
-    src/choice_option.cpp
-    src/range_option.cpp
-    src/parser.cpp
-    src/command.cpp
-    src/command_line.cpp
+    src/qflags-all.cpp
 )
 
 add_library(qflags-static STATIC
