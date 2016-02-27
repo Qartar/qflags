@@ -3,6 +3,45 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 /**
+ * Test that the parser detects when an argument is added multiple times.
+ */
+TEST(parser_test, add_multiple)
+{
+    auto flag = qflags::flag("flag");
+    auto parser = qflags::parser();
+
+    // This function is used internally by gtest to perform ASSERT_DEATH and
+    // related tests. It is used here to capture stderr and verify that a
+    // warning message is generated and also prevents output to stderr from
+    // otherwise failing the test suite. This means that ASSERT_DEATH tests
+    // cannot be used between the Capture/GetCaptured calls.
+    testing::internal::CaptureStderr();
+
+    EXPECT_EQ(true, parser.add_argument(&flag));
+    EXPECT_EQ(true, parser.add_argument(&flag));
+    EXPECT_NE(0, testing::internal::GetCapturedStderr().length());
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * Test that the parser detects multiple arguments with the same name.
+ */
+TEST(parser_test, add_duplicate)
+{
+    auto flag1 = qflags::flag("flag");
+    auto flag2 = qflags::flag("flag");
+    auto parser = qflags::parser();
+
+    // See note in the parser_test.add_multiple test.
+    testing::internal::CaptureStderr();
+
+    EXPECT_EQ(true, parser.add_argument(&flag1));
+    EXPECT_EQ(false, parser.add_argument(&flag2));
+    EXPECT_NE(0, testing::internal::GetCapturedStderr().length());
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
  * Test that the parser can handle an empty command list.
  */
 TEST(parser_test, parse_empty)
