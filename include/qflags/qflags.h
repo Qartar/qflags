@@ -20,8 +20,15 @@ namespace qflags {
 
 ////////////////////////////////////////////////////////////////////////////////
 /**
- * Utility class for normalizing command line arguments into a UTF-8 encoded
- * array of argument strings.
+ * @class command_line
+ *
+ * @brief Utility class encapsulating a command line
+ *
+ * Normalizes command line arguments into a UTF-8 encoded array of argument
+ * strings. It accepts a single wide-character string, an array of wide-
+ * character strings, or an array of multi-byte character strings. It is
+ * *highly* recommended for developers on Windows platforms to use the wide-
+ * character versions in order to avoid non-reversible character conversions.
  */
 class command_line
 {
@@ -99,6 +106,8 @@ class command_line
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * @class argument
+ *
+ * @brief Abstract base class for all argument types
  */
 class argument
 {
@@ -184,6 +193,14 @@ class argument
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * @class parser
+ *
+ * @brief Populates argument values from a command line
+ *
+ * Arguments are added to the parser prior to parsing a command line. The parser
+ * holds a reference to the arguments. When a command line is parsed the
+ * arguments are then populated with values from the command line. Arguments
+ * can be accessed from the parser by name or by the original argument object
+ * passed to the parser.
  */
 class parser
 {
@@ -287,6 +304,12 @@ class parser
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * @class command
+ *
+ * @brief Sub-command argument for hierarchical command line parsing
+ *
+ * Arguments can be added to the command argument as a separate parser. If a
+ * parser encounters a command argument then the remainder of the command line
+ * arguments are parsed by the subcommand.
  */
 class command
     : public argument
@@ -316,6 +339,16 @@ class command
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * @class flag
+ *
+ * @brief Simple argument which evaluates to true if found on the command line.
+ *
+ * Flags can be specified by using their name as a long option (e.g. "--foo") or
+ * by an optional short name (e.g. "-f"). Flags can also be set in a group using
+ * their short names (e.g. "-fgh").
+ *
+ * It is an error for a flag group to contain a character that does not
+ * correspond to any argument's short name and the parser will fail to parse a
+ * command line in that case.
  */
 class flag
     : public argument
@@ -354,6 +387,10 @@ class flag
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * @class option
+ *
+ * @brief Base class for arguments with command-line specified values
+ *
+ * All option arguments take the form "--<name> <value>" or "--<name>=<value>".
  */
 class option
     : public argument
@@ -403,6 +440,8 @@ class option
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * @class string_option
+ *
+ * @brief Simple option which takes a value as a string
  */
 class string_option
     : public option
@@ -425,6 +464,22 @@ class string_option
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * @class boolean_option
+ *
+ * @brief Simple option which takes a value as a boolean
+ *
+ * The following strings evaluate to `true`:
+ *  - "true"
+ *  - "True"
+ *  - "TRUE"
+ *  - "1"
+ *
+ * The following strings evaluate to `false`:
+ *  - "false"
+ *  - "False"
+ *  - "FALSE"
+ *  - "0"
+ *
+ * All other strings are invalid and will result in a parsing error.
  */
 class boolean_option
     : public option
@@ -479,6 +534,8 @@ class boolean_option
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * @class integer_option
+ *
+ * @brief Simple option which takes a value as an integer
  */
 class integer_option
     : public option
@@ -533,6 +590,8 @@ class integer_option
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * @class choice_option
+ *
+ * @brief String-valued option which only accepts a specific set of values
  */
 class choice_option
     : public string_option
@@ -571,6 +630,8 @@ class choice_option
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * @class range_option
+ *
+ * @brief Integer-valued option which only accepts a specific range of values
  */
 class range_option
     : public integer_option
