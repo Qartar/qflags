@@ -71,6 +71,32 @@ TEST(string_option_test, parse_string)
 
 ////////////////////////////////////////////////////////////////////////////////
 /**
+ * Test that the parser correctly parses a string value using an equality sign.
+ */
+TEST(string_option_test, parse_string_equals)
+{
+    auto parser = qflags::parser();
+
+    char const* argv[] = { "--foo=bar" };
+    auto command_line = qflags::command_line(_countof(argv), argv);
+
+    auto option = qflags::string_option("foo");
+
+    ASSERT_EQ(true, parser.add_argument(&option));
+    {
+        std::string errors;
+
+        ASSERT_EQ(true, parser.parse(command_line, &errors));
+        EXPECT_EQ("bar", static_cast<std::string>(parser["foo"]));
+        EXPECT_EQ("bar", static_cast<std::string>(option));
+        EXPECT_EQ(1, parser.argc());
+        EXPECT_EQ(0, parser.remaining_argc());
+        EXPECT_EQ(0, errors.length());
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
  * Test that the parser correctly detects a missing string value.
  */
 TEST(string_option_test, parse_string_no_value)

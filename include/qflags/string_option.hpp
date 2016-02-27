@@ -46,11 +46,18 @@ QFLAGS_INLINE int option::_parse_string(int argc,
     assert(value_string && "value_string must not be null!");
 
     // Check if argument matches option's name.
-    if (argc < 1 || argv[0] != ("--" + _name)) {
+    std::string argument_name = "--" + _name;
+    if (argc < 1 || strncmp(argv[0], argument_name.c_str(), argument_name.length())) {
         return 0;
     }
 
-    if (argc < 2) {
+    // Check if argument has the form: "--<name>=<value>"
+    if (argv[0][argument_name.length()] == '=') {
+        (*value_string) = argv[0] + argument_name.length() + 1;
+        return 1;
+    }
+    // Check if there are insufficient arguments.
+    else if (argc < 2) {
         errors->append("Error: Insufficient arguments for option '");
         errors->append(_name);
         errors->append("'.\n");

@@ -27,6 +27,14 @@ QFLAGS_INLINE bool parser::add_argument(argument* arg)
         return false;
     }
 
+    // Check for invalid characters in the argument name.
+    if (arg->name().find('=') != std::string::npos) {
+        fprintf(stderr,
+                "Error: Argument name '%s' contains invalid character '='.\n",
+                arg->name().c_str());
+        return false;
+    }
+
     // Check for duplicate arguments.
     auto const iter = _arguments.find(arg->name());
     if (iter != _arguments.cend()) {

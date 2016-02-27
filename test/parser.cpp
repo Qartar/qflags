@@ -42,6 +42,22 @@ TEST(parser_test, add_duplicate)
 
 ////////////////////////////////////////////////////////////////////////////////
 /**
+ * Test that the parser detects arguments with invalid names.
+ */
+TEST(parser_test, add_invalid_name)
+{
+    auto equals = qflags::flag("fl=ag");
+    auto parser = qflags::parser();
+
+    // See note in the parser_test.add_multiple test.
+    testing::internal::CaptureStderr();
+
+    EXPECT_EQ(false, parser.add_argument(&equals));
+    EXPECT_NE(0, testing::internal::GetCapturedStderr().length());
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
  * Test that the parser can handle an empty command list.
  */
 TEST(parser_test, parse_empty)
