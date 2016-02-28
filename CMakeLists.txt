@@ -2,23 +2,11 @@ cmake_minimum_required(VERSION 2.8.11)
 
 project(qflags)
 
+set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
+
 ################################################################################
 
-set(GOOGLETEST_PATH ${CMAKE_SOURCE_DIR}/googletest)
-if(IS_DIRECTORY ${GOOGLETEST_PATH})
-    add_subdirectory(${GOOGLETEST_PATH})
-endif()
- 
-# If the toolchain was set to use Microsoft's Clang/C2 compilers then force
-# gmock and gtest to use the normal C1/C2 compiler because otherwise all of
-# their Microsoft specific configuration would need to be redone.
-if(MSVC AND ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
-    foreach(target
-            gtest gtest_main gmock gmock_main)
-
-        set_target_properties(${target} PROPERTIES VS_PLATFORM_TOOLSET_OVERRIDE "v140")
-    endforeach()
-endif()
+find_package(googletest)
 
 ################################################################################
 
@@ -63,6 +51,8 @@ if(MSVC)
     # Enable Unicode
     add_definitions(-D_UNICODE -DUNICODE)
 endif()
+
+################################################################################
 
 set(INCLUDES
     include/qflags/qflags.h
