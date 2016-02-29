@@ -4,6 +4,14 @@ project(qflags)
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
 
+# CMake by default links targets to the shared runtime library but this is
+# overridden for qflags unless this option is enabled. This may be necessary
+# if qflags is being linked to other targets which use the shared runtime.
+option(qflags_use_shared_crt
+       "Use shared rather than static runtime library."
+       OFF
+)
+
 ################################################################################
 
 find_package(googletest)
@@ -41,7 +49,9 @@ if(MSVC)
         set(${flag_var} "${${flag_var}} ${compiler_flags}")
 
         # Disable dynamic linking to C++ runtime libraries
-        string(REPLACE "/MD" "-MT" ${flag_var} "${${flag_var}}")
+        if(NOT qflags_use_shared_crt)
+            string(REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
+        endif()
 
         # Disable RTTI
         string(REPLACE "/GR" "/GR-" ${flag_var} "${${flag_var}}")
