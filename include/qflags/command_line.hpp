@@ -42,6 +42,64 @@ QFLAGS_INLINE command_line::command_line(int argc, wchar_t const* const* argv)
 /**
  *
  */
+QFLAGS_INLINE command_line::command_line(char const* args, char const* locale)
+{
+#if defined(_WINDOWS)
+    // Determine the code page for the argument strings.
+    UINT code_page = CP_UTF8; // default, no conversion
+    if (locale && *locale == '\0') {
+        code_page = GetACP(); // Use the system's default ANSI code page.
+    } else if (locale) {
+        wchar_t wlocale[1024]; // Inappropriately large buffer.
+
+        // Convert locale to a wide-character string using default encoding.
+        swprintf_s(wlocale, L"%S", locale);
+
+        // Retrieve the default ANSI code page for the specified locale.
+        GetLocaleInfoEx(wlocale,
+                        LOCALE_IDEFAULTANSICODEPAGE|LOCALE_RETURN_NUMBER,
+                        reinterpret_cast<wchar_t*>(&code_page),
+                        sizeof(code_page) / sizeof(wchar_t));
+    }
+
+    // Determine required size.
+    int length_in_characters = MultiByteToWideChar(
+        code_page,              // CodePage
+        0,                      // dwFlags
+        args,                   // lpMultiByteStr
+        -1,                     // cbMultiByte
+        NULL,                   // lpWideCharStr
+        0);                     // cchWideChar
+
+    std::vector<wchar_t> wargs(length_in_characters, 0);
+
+    // Convert arguments to UTF-16.
+    length_in_characters = MultiByteToWideChar(
+        code_page,              // CodePage
+        0,                      // dwFlags
+        args,                   // lpMultiByteStr
+        -1,                     // cbMultiByte
+        wargs.data(),           // lpWideCharStr
+        length_in_characters);  // cchWideChar
+
+    // Convert command line string to argv arguments.
+    int argc = 0;
+    LPWSTR* argv = CommandLineToArgvW(wargs.data(), &argc);
+
+    // Parse the command line arguments.
+    _init(argc, argv);
+
+    // Free the memory allocated by CommandLineArgvW
+    LocalFree(argv);
+#else //defined(_WINDOWS)
+#error not-implemented
+#endif //!defined(_WINDOWS)
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ *
+ */
 QFLAGS_INLINE command_line::command_line(int argc, char const* const* argv, char const* locale)
 {
 #if defined(_WINDOWS)

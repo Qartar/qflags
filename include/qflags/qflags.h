@@ -55,6 +55,19 @@ class command_line
     command_line(int argc, wchar_t const* const* argv);
 
     /**
+     * Initialize from a single command line argument string encoded using the
+     * specified locale. Defaults to the 'user-preferred' local set by the
+     * operating system.
+     *
+     *  @param args
+     *      an argument string
+     *  @param locale
+     *      a locale name used to interpret the string `args`
+     *      a value of `nullptr` will suppress encoding conversion.
+     */
+    command_line(char const* args, char const* locale = "");
+
+    /**
      * Initialize from an array of command line argument strings encoded
      * using the specified locale. Defaults to the 'user-preferred' locale set
      * by the operating system.
