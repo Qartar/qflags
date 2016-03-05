@@ -12,7 +12,16 @@ namespace qflags {
  *
  */
 QFLAGS_INLINE integer_option::integer_option(char const* name, int64_t default_value) :
-    option(name, std::to_string(default_value).c_str()),
+    integer_option(name, "", default_value) {}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ *
+ */
+QFLAGS_INLINE integer_option::integer_option(char const* name,
+                                             char const* short_name,
+                                             int64_t default_value) :
+    option(name, short_name, std::to_string(default_value).c_str()),
     _value_integer(default_value),
     _default_value(default_value) {}
 

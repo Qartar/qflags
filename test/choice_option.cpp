@@ -7,10 +7,12 @@
  */
 TEST(choice_option_test, capabilities)
 {
+    auto short_name = std::string("f");
     auto name = std::string("foo");
-    auto option = qflags::choice_option(name.c_str(), {"bar", "baz"}, "bar");
+    auto option = qflags::choice_option(name.c_str(), short_name.c_str(), {"bar", "baz"}, "bar");
 
     EXPECT_EQ(name, option.name());
+    EXPECT_EQ(short_name, option.short_name());
     EXPECT_EQ(false, option.is_set());
     EXPECT_EQ(false, option.is_flag());
     EXPECT_EQ(false, option.is_command());

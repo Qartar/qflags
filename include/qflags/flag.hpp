@@ -9,12 +9,10 @@ namespace qflags {
 
 ////////////////////////////////////////////////////////////////////////////////
 QFLAGS_INLINE flag::flag(char const* name) :
-    argument(name),
-    _short_name("") {}
+    argument(name) {}
 
 QFLAGS_INLINE flag::flag(char const* name, char const* short_name) :
-    argument(name),
-    _short_name(short_name) {}
+    argument(name, short_name) {}
 
 ////////////////////////////////////////////////////////////////////////////////
 QFLAGS_INLINE int flag::parse(int argc, char const* const* argv, std::string* errors)

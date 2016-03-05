@@ -8,9 +8,11 @@
 TEST(range_option_test, capabilities)
 {
     auto name = std::string("foo");
-    auto option = qflags::range_option(name.c_str(), -1, 1, 0);
+    auto short_name = std::string("f");
+    auto option = qflags::range_option(name.c_str(), short_name.c_str(), -1, 1, 0);
 
     EXPECT_EQ(name, option.name());
+    EXPECT_EQ(short_name, option.short_name());
     EXPECT_EQ(false, option.is_set());
     EXPECT_EQ(false, option.is_flag());
     EXPECT_EQ(false, option.is_command());

@@ -130,6 +130,10 @@ class argument
     std::string const& name() const { return _name; }
 
     //! @return
+    //!     short name of the argument, may be empty
+    std::string const& short_name() const { return _short_name; }
+
+    //! @return
     //!     true if the argument was explicitly set by the command line
     bool is_set() const { return _is_set; }
 
@@ -181,13 +185,20 @@ class argument
   protected:
     friend class parser;
 
-    std::string _name;  //!< name of this argument
-    bool _is_set;       //!< true if the argument was set by the command line
+    std::string _name;          //!< name of this argument
+    std::string _short_name;    //!< single-character name of the argument
+    bool _is_set;               //!< true if the argument was set by the command line
 
   protected:
     //! @param[in] name
     //!     name of the argument
     argument(char const* name);
+
+    //! @param[in] name
+    //!     name of the argument
+    //! @param[in] short_name
+    //!     short name of the argument
+    argument(char const* name, char const* short_name);
 
     //! Process the command line arguments for this argument.
     //! @param[in] argc
@@ -391,10 +402,6 @@ class flag
 
   protected:
     virtual int parse(int argc, char const* const* argv, std::string* errors) override;
-
-  private:
-    //! Single-character name of the flag argument for use in a flag group.
-    std::string _short_name;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -429,6 +436,17 @@ class option
     option(char const* name, char const* default_value = "") :
         argument(name),
         _value_string(default_value ? default_value : "") {}
+
+    //! Construct an option with the given name and default value.
+    //! @param[in] name
+    //!     name of the option argument
+    //! @param[in] short_name
+    //!     short name of the option argument
+    //! @param[in] default_value
+    //!     default value of the option argument as a string
+    option(char const* name, char const* short_name, char const* default_value) :
+        argument(name, short_name),
+        _value_string(default_value) {}
 
     //! Process the command line arguments for this argument as a string. If the
     //! argument is unmatched or invalid then value_string is not modified.
@@ -467,6 +485,15 @@ class string_option
     //!     default value of the string option as a string
     string_option(char const* name, char const* default_value = "");
 
+    //! Construct a string option with the given name and default value.
+    //! @param[in] name
+    //!     name of the string option
+    //! @param[in] short_name
+    //!     short name of the string option
+    //! @param[in] default_value
+    //!     default value of the string option as a string
+    string_option(char const* name, char const* short_name, char const* default_value);
+
   protected:
     std::string _default_value; //!< Default value as a string.
 
@@ -504,6 +531,15 @@ class boolean_option
     //! @param[in] default_value
     //!     default value of the boolean option as a boolean
     boolean_option(char const* name, bool default_value = false);
+
+    //! Construct a boolean option with the given name and default value.
+    //! @param[in] name
+    //!     name of the boolean option
+    //! @param[in] short_name
+    //!     short name of the boolean option
+    //! @param[in] default_value
+    //!     default value of the boolean option as a boolean
+    boolean_option(char const* name, char const* short_name, bool default_value = false);
 
     //! @return true
     virtual bool is_boolean() const final { return true; }
@@ -560,6 +596,15 @@ class integer_option
     //! @param[in] default_value
     //!     default value of the integer option as an integer
     integer_option(char const* name, int64_t default_value = 0);
+
+    //! Construct an integer option with the given name and default value.
+    //! @param[in] name
+    //!     name of the integer option
+    //! @param[in] short_name
+    //!     short name of the integer option
+    //! @param[in] default_value
+    //!     default value of the integer option as an integer
+    integer_option(char const* name, char const* short_name, int64_t default_value = 0);
 
     //! @return true
     virtual bool is_integer() const final { return true; }
@@ -632,6 +677,34 @@ class choice_option
                   std::set<std::string> const& choices,
                   char const* default_value);
 
+    //! Construct a choice option with the given name and permissible values.
+    //! @param[in] name
+    //!     name of the choice option
+    //! @param[in] short_name
+    //!     short name of the choice option
+    //! @param[in] choices
+    //!     a set of permissible values of the choice option
+    //! @param[in] default_value
+    //!     default value of the choice option
+    choice_option(char const* name,
+                  char const* short_name,
+                  std::initializer_list<char const*>&& choices,
+                  char const* default_value);
+
+    //! Construct a choice option with the given name and permissible values.
+    //! @param[in] name
+    //!     name of the choice option
+    //! @param[in] short_name
+    //!     short name of the choice option
+    //! @param[in] choices
+    //!     a set of permissible values of the choice option
+    //! @param[in] default_value
+    //!     default value of the choice option
+    choice_option(char const* name,
+                  char const* short_name,
+                  std::set<std::string> const& choices,
+                  char const* default_value);
+
   protected:
     //! A set of permissible values for this argument.
     std::set<std::string> _choices;
@@ -671,6 +744,37 @@ class range_option
     //! @param[in] default_value
     //!     default value of the range option as an integer
     range_option(char const* name,
+                 int64_t minimum_value,
+                 int64_t maximum_value,
+                 int64_t default_value);
+
+    //! Construct a range option with the given name and permissible values.
+    //! @param[in] name
+    //!     name of the range option
+    //! @param[in] short_name
+    //!     short name of the range option
+    //! @param[in] choices
+    //!     a set of permissible values of the range option
+    //! @param[in] default_value
+    //!     default value of the range option as an integer
+    range_option(char const* name,
+                 char const* short_name,
+                 std::initializer_list<int64_t>&& choices,
+                 int64_t default_value);
+
+    //! Construct a range option with the given name and permissible values.
+    //! @param[in] name
+    //!     name of the range option
+    //! @param[in] short_name
+    //!     short name of the range option
+    //! @param[in] minimum_value
+    //!     the minimum permissible value of the range option
+    //! @param[in] maximum_value
+    //!     the maximum permissible value of the range option
+    //! @param[in] default_value
+    //!     default value of the range option as an integer
+    range_option(char const* name,
+                 char const* short_name,
                  int64_t minimum_value,
                  int64_t maximum_value,
                  int64_t default_value);
