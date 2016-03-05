@@ -4,6 +4,7 @@
 #include <qflags/qflags.h>
 
 #include <cassert>
+#include <algorithm>
 
 namespace qflags {
 
@@ -54,8 +55,38 @@ QFLAGS_INLINE bool parser::add_argument(argument* arg)
         }
     }
 
+    // Check for ambiguous or duplicate short names.
+    if (!arg->short_name().empty()) {
+        auto const& lhs = arg->short_name();
+        for (auto const& argument : _short_arguments) {
+            auto const& rhs = argument.second->short_name();
+            if (rhs.empty()) {
+                continue;
+            }
+
+            auto const size = std::min<size_t>(lhs.size(), rhs.size());
+            auto const equal = std::equal(lhs.begin(),
+                                          lhs.begin() + size,
+                                          rhs.begin());
+
+            if (equal) {
+                fprintf(stderr,
+                        "Error: The argument with name '%s' has short name '%s' which conflicts with existing argument '%s' with short name '%s'.\n",
+                        arg->name().c_str(),
+                        arg->short_name().c_str(),
+                        argument.second->name().c_str(),
+                        argument.second->short_name().c_str());
+                return false;
+            }
+        }
+    }
+
     _arguments[arg->name()] = arg;
 
+    // Add arguments with short names to a separate map.
+    if (!arg->short_name().empty()) {
+        _short_arguments[arg->short_name()] = arg;
+    }
     // Add flags to a separate list.
     if (arg->is_flag()) {
         _flags.push_back(arg);
@@ -101,12 +132,36 @@ QFLAGS_INLINE bool parser::parse(command_line const& command_line, std::string* 
     for (size_t ii = 0; ii < argv.size();) {
         // Arg is a short flag or group of short flags.
         if (argv[ii][0] == '-' && argv[ii][1] != '-') {
-            if (!parse_flags(argv[ii], errors)) {
-                return false;
+            int count = 0;
+
+            for (auto iter : _short_arguments) {
+                if (iter.second->is_flag()) {
+                    continue;
+                }
+
+                count = iter.second->parse(static_cast<int>(argv.size() - ii),
+                                           argv.data() + ii,
+                                           errors);
+
+                if (count) {
+                    break;
+                }
             }
 
-            argv.erase(argv.cbegin() + ii);
-            continue;
+            if (count > 0) {
+                argv.erase(argv.cbegin() + ii,
+                           argv.cbegin() + ii + count);
+                continue;
+            }
+            // No option arguments were matched, try to parse flags
+            else if (count == 0) {
+                if (parse_flags(argv[ii], errors)) {
+                    argv.erase(argv.cbegin() + ii);
+                    continue;
+                }
+            }
+
+            return false;
         }
         // Arg is an argument terminator: "--"
         else if (argv[ii][0] == '-' && argv[ii][1] == '-' && argv[ii][2] == '\0') {

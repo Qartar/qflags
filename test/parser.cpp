@@ -42,6 +42,24 @@ TEST(parser_test, add_duplicate)
 
 ////////////////////////////////////////////////////////////////////////////////
 /**
+ * Test that the parser detects multiple arguments with the same name.
+ */
+TEST(parser_test, add_short_duplicate)
+{
+    auto flag1 = qflags::flag("flag1", "f");
+    auto flag2 = qflags::flag("flag2", "f");
+    auto parser = qflags::parser();
+
+    // See note in the parser_test.add_multiple test.
+    testing::internal::CaptureStderr();
+
+    EXPECT_EQ(true, parser.add_argument(&flag1));
+    EXPECT_EQ(false, parser.add_argument(&flag2));
+    EXPECT_NE(0, testing::internal::GetCapturedStderr().length());
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
  * Test that the parser detects arguments with invalid names.
  */
 TEST(parser_test, add_invalid_name)

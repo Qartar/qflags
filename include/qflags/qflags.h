@@ -294,6 +294,9 @@ class parser
     //! All arguments added to the parser keyed by their names.
     std::map<std::string, argument*> _arguments;
 
+    //! All arguments with short names keyed by their short names.
+    std::map<std::string, argument*> _short_arguments;
+
     //! A list of all command arguments added to the parser.
     std::vector<argument*> _commands;
 

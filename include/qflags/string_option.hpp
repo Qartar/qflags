@@ -53,9 +53,15 @@ QFLAGS_INLINE int option::_parse_string(int argc,
     assert(argv && "argv must not be null!");
     assert(errors && "errors must not be null!");
     assert(value_string && "value_string must not be null!");
+    assert(argv[0][0] == '-' && "argv must start with argument prefix!");
+
+    // Choose name or short name based on argument prefix. If short name is
+    // empty then always use the long name regardless of prefix.
+    std::string argument_name = (_short_name.empty() || argv[0][1] == '-')
+                                ? "--" + _name
+                                : "-" + _short_name;
 
     // Check if argument matches option's name.
-    std::string argument_name = "--" + _name;
     if (argc < 1 || strncmp(argv[0], argument_name.c_str(), argument_name.length())) {
         return 0;
     }

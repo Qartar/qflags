@@ -122,6 +122,59 @@ TEST(string_option_test, parse_string_equals)
 
 ////////////////////////////////////////////////////////////////////////////////
 /**
+ * Test that the parser correctly parses a string value using its short name.
+ */
+TEST(string_option_test, parse_short_string)
+{
+    auto parser = qflags::parser();
+
+    char const* argv[] = { "-f", "bar" };
+    auto command_line = qflags::command_line(_countof(argv), argv);
+
+    auto option = qflags::string_option("foo", "f", "");
+
+    ASSERT_EQ(true, parser.add_argument(&option));
+    {
+        std::string errors;
+
+        ASSERT_EQ(true, parser.parse(command_line, &errors));
+        EXPECT_EQ("bar", static_cast<std::string>(parser["foo"]));
+        EXPECT_EQ("bar", static_cast<std::string>(option));
+        EXPECT_EQ(2, parser.argc());
+        EXPECT_EQ(0, parser.remaining_argc());
+        EXPECT_EQ(0, errors.length());
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * Test that the parser correctly parses a string value using its short name
+ * with an equality sign.
+ */
+TEST(string_option_test, parse_short_string_equals)
+{
+    auto parser = qflags::parser();
+
+    char const* argv[] = { "-f=bar" };
+    auto command_line = qflags::command_line(_countof(argv), argv);
+
+    auto option = qflags::string_option("foo", "f", "");
+
+    ASSERT_EQ(true, parser.add_argument(&option));
+    {
+        std::string errors;
+
+        ASSERT_EQ(true, parser.parse(command_line, &errors));
+        EXPECT_EQ("bar", static_cast<std::string>(parser["foo"]));
+        EXPECT_EQ("bar", static_cast<std::string>(option));
+        EXPECT_EQ(1, parser.argc());
+        EXPECT_EQ(0, parser.remaining_argc());
+        EXPECT_EQ(0, errors.length());
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
  * Test that the parser correctly detects a missing string value.
  */
 TEST(string_option_test, parse_string_no_value)
