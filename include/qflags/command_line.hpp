@@ -347,7 +347,9 @@ QFLAGS_INLINE void command_line::_init(int argc, char const* const* argv)
     // Since the string is NUL delimited add an extra NUL to mark the end.
     _args.resize(total_length_in_bytes + 1, 0);
     char* args_ptr = _args.data();
+#if defined(_WINDOWS)
     char const* const args_end = _args.data() + _args.size();
+#endif //defined(_WINDOWS)
 
     // Copy arguments into string buffer.
     for (int ii = 0; ii < argc; ++ii) {

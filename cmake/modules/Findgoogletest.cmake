@@ -5,6 +5,12 @@ set(GOOGLETEST_PATH "${CMAKE_SOURCE_DIR}/googletest")
 
 # Allow qflags to be built without Google Test
 if(EXISTS ${GOOGLETEST_PATH}/CMakeLists.txt)
+
+    # GTest and MinGW don't play nicely when PTHREADS are enabled.
+    if(MINGW)
+        set(gtest_disable_pthreads ON)
+    endif()
+
     add_subdirectory(${GOOGLETEST_PATH})
 
     # If the toolchain was set to use Microsoft's Clang/C2 compilers then force
@@ -13,6 +19,14 @@ if(EXISTS ${GOOGLETEST_PATH}/CMakeLists.txt)
     if(MSVC AND ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
         foreach(target gtest gtest_main gmock gmock_main)
             set_target_properties(${target} PROPERTIES VS_PLATFORM_TOOLSET_OVERRIDE "v140")
+        endforeach()
+    endif()
+
+    # If building with GCC disable a set of warnings generated in test code.
+    if(${CMAKE_CXX_COMPILER_ID} STREQUAL GNU)
+        set(compile_options "-w") # Disable all warnings :(
+        foreach(target gtest gtest_main gmock gmock_main)
+            target_compile_options(${target} PUBLIC ${compile_options})
         endforeach()
     endif()
 endif()

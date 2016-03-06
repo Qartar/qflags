@@ -3,6 +3,7 @@
 
 #include <qflags/qflags.h>
 
+#include <climits>
 #include <algorithm>
 #include <cctype>
 
@@ -37,18 +38,18 @@ int levenshtein(char const* a, char const* b, bool ignore_case, bool print_matri
 
     // Initialize the first row with the edit distance from the substring
     // prefixes of `a` to an empty string.
-    for (int ii = 1; ii <= len_a; ++ii) {
+    for (size_t ii = 1; ii <= len_a; ++ii) {
         idx(ii, 0) = ii;
     }
 
     // Initialize the first column with the edit distance from the substring
     // prefixes of `b` to an empty string.
-    for (int jj = 1; jj <= len_b; ++jj) {
+    for (size_t jj = 1; jj <= len_b; ++jj) {
         idx(0, jj) = jj;
     }
 
-    for (int ii = 0; ii < len_a; ++ii) {
-        for (int jj = 0; jj < len_b; ++jj) {
+    for (size_t ii = 0; ii < len_a; ++ii) {
+        for (size_t jj = 0; jj < len_b; ++jj) {
             //! Convert both characters to upper case if ignoring case.
             int ch_a = ignore_case ? std::toupper(a[ii]) : a[ii];
             int ch_b = ignore_case ? std::toupper(b[jj]) : b[jj];
@@ -75,13 +76,13 @@ int levenshtein(char const* a, char const* b, bool ignore_case, bool print_matri
     // Print the adjacency matrix to stdout.
     if (print_matrix) {
         fprintf(stdout, "      ");
-        for (int jj = 0; jj < len_b; ++jj) {
+        for (size_t jj = 0; jj < len_b; ++jj) {
             fprintf(stdout, " %1.1s ", b + jj);
         }
         fprintf(stdout, "\n");
-        for (int ii = 0; ii <= len_a; ++ii) {
+        for (size_t ii = 0; ii <= len_a; ++ii) {
             fprintf(stdout, " %1.1s ", ii ? a + ii - 1 : "");
-            for (int jj = 0; jj <= len_b; ++jj) {
+            for (size_t jj = 0; jj <= len_b; ++jj) {
                 fprintf(stdout, "%2d ", idx(ii, jj));
             }
             fprintf(stdout, "\n");

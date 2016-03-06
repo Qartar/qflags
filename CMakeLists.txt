@@ -60,6 +60,22 @@ if(MSVC)
 
     # Enable Unicode
     add_definitions(-D_UNICODE -DUNICODE)
+
+elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL GNU)
+
+    # -Wall         Enable all warnings
+    # -Werror       Warnings as errors
+    # -std=c++11    Use C++11 language features
+    set(compiler_flags "-Wall -Werror -Wtype-limits -Wunused-parameter -std=c++11")
+
+    foreach (flag_var
+             CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
+             CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
+
+        # Set base compiler flags
+        set(${flag_var} "${${flag_var}} ${compiler_flags}")
+    endforeach()
+
 endif()
 
 ################################################################################
