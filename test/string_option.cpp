@@ -149,13 +149,13 @@ TEST(string_option_test, parse_short_string)
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Test that the parser correctly parses a string value using its short name
- * with an equality sign.
+ * concatenated with its value.
  */
-TEST(string_option_test, parse_short_string_equals)
+TEST(string_option_test, parse_short_string_concat)
 {
     auto parser = qflags::parser();
 
-    char const* argv[] = { "-f=bar" };
+    char const* argv[] = { "-fbar" };
     auto command_line = qflags::command_line(argv);
 
     auto option = qflags::string_option("foo", "f", "");
