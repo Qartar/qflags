@@ -128,22 +128,27 @@ TEST(command_line_test, args)
  */
 TEST(command_list_test, args_1251)
 {
-    char const* args =
-        "\xf2\xe5\xf1\xf2.exe " // Russian 'тест.exe'
-        "-\xe0\xe1\xe2 "        // Russian '-абв'
-        "--\xee\xe4\xe8\xed "   // Russian '--одно'
-        "--\xe4\xe2\xe0 "       // Russian '--два'
-        "--\xf2\xf0\xe8 "       // Russian '--три'
-    ;
-    auto command_line = qflags::command_line(args, "ru-RU");
+    try {
+        char const* args =
+            "\xf2\xe5\xf1\xf2.exe " // Russian 'тест.exe'
+            "-\xe0\xe1\xe2 "        // Russian '-абв'
+            "--\xee\xe4\xe8\xed "   // Russian '--одно'
+            "--\xe4\xe2\xe0 "       // Russian '--два'
+            "--\xf2\xf0\xe8 "       // Russian '--три'
+        ;
+        auto command_line = qflags::command_line(args, "ru-RU");
 
-    ASSERT_EQ(5, command_line.argc());
-    EXPECT_EQ(std::string("\xd1\x82\xd0\xb5\xd1\x81\xd1\x82.exe"), command_line.argv(0));
-    EXPECT_EQ(std::string("-\xd0\xb0\xd0\xb1\xd0\xb2"), command_line.argv(1));
-    EXPECT_EQ(std::string("--\xd0\xbe\xd0\xb4\xd0\xb8\xd0\xbd"), command_line.argv(2));
-    EXPECT_EQ(std::string("--\xd0\xb4\xd0\xb2\xd0\xb0"), command_line.argv(3));
-    EXPECT_EQ(std::string("--\xd1\x82\xd1\x80\xd0\xb8"), command_line.argv(4));
-    EXPECT_EQ(nullptr, command_line.argv(5));
+        ASSERT_EQ(5, command_line.argc());
+        EXPECT_EQ(std::string("\xd1\x82\xd0\xb5\xd1\x81\xd1\x82.exe"), command_line.argv(0));
+        EXPECT_EQ(std::string("-\xd0\xb0\xd0\xb1\xd0\xb2"), command_line.argv(1));
+        EXPECT_EQ(std::string("--\xd0\xbe\xd0\xb4\xd0\xb8\xd0\xbd"), command_line.argv(2));
+        EXPECT_EQ(std::string("--\xd0\xb4\xd0\xb2\xd0\xb0"), command_line.argv(3));
+        EXPECT_EQ(std::string("--\xd1\x82\xd1\x80\xd0\xb8"), command_line.argv(4));
+        EXPECT_EQ(nullptr, command_line.argv(5));
+    }
+    // Locale not available.
+    catch(std::runtime_error const&) {
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -152,22 +157,27 @@ TEST(command_list_test, args_1251)
  */
 TEST(command_list_test, args_1252)
 {
-    char const* args =
-        "pr\xf8ve.exe "     // Danish 'prøve.exe'
-        "-\x8a\x8e\x9c "    // Differences from ISO-8859-1 '-ŠŽŸ'
-        "--amh\xe1in "      // Irish '--amháin'
-        "--k\xe9t "         // Hungarian '--két'
-        "--\xfer\xedr "     // Icelandic '--þrír'
-    ;
-    auto command_line = qflags::command_line(args, "en-US");
+    try {
+        char const* args =
+            "pr\xf8ve.exe "     // Danish 'prøve.exe'
+            "-\x8a\x8e\x9c "    // Differences from ISO-8859-1 '-ŠŽŸ'
+            "--amh\xe1in "      // Irish '--amháin'
+            "--k\xe9t "         // Hungarian '--két'
+            "--\xfer\xedr "     // Icelandic '--þrír'
+        ;
+        auto command_line = qflags::command_line(args, "en-US");
 
-    ASSERT_EQ(5, command_line.argc());
-    EXPECT_EQ(std::string("pr\xc3\xb8ve.exe"), command_line.argv(0));
-    EXPECT_EQ(std::string("-\xc5\xa0\xc5\xbd\xc5\x93"), command_line.argv(1));
-    EXPECT_EQ(std::string("--amh\xc3\xa1in"), command_line.argv(2));
-    EXPECT_EQ(std::string("--k\xc3\xa9t"), command_line.argv(3));
-    EXPECT_EQ(std::string("--\xc3\xber\xc3\xadr"), command_line.argv(4));
-    EXPECT_EQ(nullptr, command_line.argv(5));
+        ASSERT_EQ(5, command_line.argc());
+        EXPECT_EQ(std::string("pr\xc3\xb8ve.exe"), command_line.argv(0));
+        EXPECT_EQ(std::string("-\xc5\xa0\xc5\xbd\xc5\x93"), command_line.argv(1));
+        EXPECT_EQ(std::string("--amh\xc3\xa1in"), command_line.argv(2));
+        EXPECT_EQ(std::string("--k\xc3\xa9t"), command_line.argv(3));
+        EXPECT_EQ(std::string("--\xc3\xber\xc3\xadr"), command_line.argv(4));
+        EXPECT_EQ(nullptr, command_line.argv(5));
+    }
+    // Locale not available.
+    catch(std::runtime_error const&) {
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -201,23 +211,28 @@ TEST(command_list_test, argv_utf8)
  */
 TEST(command_list_test, argv_1251)
 {
-    char const* argv[] =
-    {
-        "\xf2\xe5\xf1\xf2.exe", // Russian 'тест.exe'
-        "-\xe0\xe1\xe2",        // Russian '-абв'
-        "--\xee\xe4\xe8\xed",   // Russian '--одно'
-        "--\xe4\xe2\xe0",       // Russian '--два'
-        "--\xf2\xf0\xe8",       // Russian '--три'
-    };
-    auto command_line = qflags::command_line(argv, "ru-RU");
+    try {
+        char const* argv[] =
+        {
+            "\xf2\xe5\xf1\xf2.exe", // Russian 'тест.exe'
+            "-\xe0\xe1\xe2",        // Russian '-абв'
+            "--\xee\xe4\xe8\xed",   // Russian '--одно'
+            "--\xe4\xe2\xe0",       // Russian '--два'
+            "--\xf2\xf0\xe8",       // Russian '--три'
+        };
+        auto command_line = qflags::command_line(argv, "ru-RU");
 
-    ASSERT_EQ(5, command_line.argc());
-    EXPECT_EQ(std::string("\xd1\x82\xd0\xb5\xd1\x81\xd1\x82.exe"), command_line.argv(0));
-    EXPECT_EQ(std::string("-\xd0\xb0\xd0\xb1\xd0\xb2"), command_line.argv(1));
-    EXPECT_EQ(std::string("--\xd0\xbe\xd0\xb4\xd0\xb8\xd0\xbd"), command_line.argv(2));
-    EXPECT_EQ(std::string("--\xd0\xb4\xd0\xb2\xd0\xb0"), command_line.argv(3));
-    EXPECT_EQ(std::string("--\xd1\x82\xd1\x80\xd0\xb8"), command_line.argv(4));
-    EXPECT_EQ(nullptr, command_line.argv(5));
+        ASSERT_EQ(5, command_line.argc());
+        EXPECT_EQ(std::string("\xd1\x82\xd0\xb5\xd1\x81\xd1\x82.exe"), command_line.argv(0));
+        EXPECT_EQ(std::string("-\xd0\xb0\xd0\xb1\xd0\xb2"), command_line.argv(1));
+        EXPECT_EQ(std::string("--\xd0\xbe\xd0\xb4\xd0\xb8\xd0\xbd"), command_line.argv(2));
+        EXPECT_EQ(std::string("--\xd0\xb4\xd0\xb2\xd0\xb0"), command_line.argv(3));
+        EXPECT_EQ(std::string("--\xd1\x82\xd1\x80\xd0\xb8"), command_line.argv(4));
+        EXPECT_EQ(nullptr, command_line.argv(5));
+    }
+    // Locale not available.
+    catch(std::runtime_error const&) {
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -226,23 +241,28 @@ TEST(command_list_test, argv_1251)
  */
 TEST(command_list_test, argv_1252)
 {
-    char const* argv[] =
-    {
-        "pr\xf8ve.exe",     // Danish 'prøve.exe'
-        "-\x8a\x8e\x9c",    // Differences from ISO-8859-1 '-ŠŽŸ'
-        "--amh\xe1in",      // Irish '--amháin'
-        "--k\xe9t",         // Hungarian '--két'
-        "--\xfer\xedr",     // Icelandic '--þrír'
-    };
-    auto command_line = qflags::command_line(argv, "en-US");
+    try {
+        char const* argv[] =
+        {
+            "pr\xf8ve.exe",     // Danish 'prøve.exe'
+            "-\x8a\x8e\x9c",    // Differences from ISO-8859-1 '-ŠŽŸ'
+            "--amh\xe1in",      // Irish '--amháin'
+            "--k\xe9t",         // Hungarian '--két'
+            "--\xfer\xedr",     // Icelandic '--þrír'
+        };
+        auto command_line = qflags::command_line(argv, "en-US");
 
-    ASSERT_EQ(5, command_line.argc());
-    EXPECT_EQ(std::string("pr\xc3\xb8ve.exe"), command_line.argv(0));
-    EXPECT_EQ(std::string("-\xc5\xa0\xc5\xbd\xc5\x93"), command_line.argv(1));
-    EXPECT_EQ(std::string("--amh\xc3\xa1in"), command_line.argv(2));
-    EXPECT_EQ(std::string("--k\xc3\xa9t"), command_line.argv(3));
-    EXPECT_EQ(std::string("--\xc3\xber\xc3\xadr"), command_line.argv(4));
-    EXPECT_EQ(nullptr, command_line.argv(5));
+        ASSERT_EQ(5, command_line.argc());
+        EXPECT_EQ(std::string("pr\xc3\xb8ve.exe"), command_line.argv(0));
+        EXPECT_EQ(std::string("-\xc5\xa0\xc5\xbd\xc5\x93"), command_line.argv(1));
+        EXPECT_EQ(std::string("--amh\xc3\xa1in"), command_line.argv(2));
+        EXPECT_EQ(std::string("--k\xc3\xa9t"), command_line.argv(3));
+        EXPECT_EQ(std::string("--\xc3\xber\xc3\xadr"), command_line.argv(4));
+        EXPECT_EQ(nullptr, command_line.argv(5));
+    }
+    // Locale not available.
+    catch(std::runtime_error const&) {
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
