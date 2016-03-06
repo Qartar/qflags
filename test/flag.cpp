@@ -37,7 +37,7 @@ TEST(flag_test, parse_short_flag)
     auto parser = qflags::parser();
 
     char const* argv[] = { "-f" };
-    auto command_line = qflags::command_line(_countof(argv), argv);
+    auto command_line = qflags::command_line(argv);
 
     auto flag = qflags::flag("flag", "f");
 
@@ -63,7 +63,7 @@ TEST(flag_test, parse_short_flags)
     auto parser = qflags::parser();
 
     char const* argv[] = { "-ma" };
-    auto command_line = qflags::command_line(_countof(argv), argv);
+    auto command_line = qflags::command_line(argv);
 
     auto flag_m = qflags::flag("flag_m", "m");
     auto flag_i = qflags::flag("flag_i", "i");
@@ -98,7 +98,7 @@ TEST(flag_test, parse_short_flags_groups)
     auto parser = qflags::parser();
 
     char const* argv[] = { "-ac", "-df" };
-    auto command_line = qflags::command_line(_countof(argv), argv);
+    auto command_line = qflags::command_line(argv);
 
     auto flag_a = qflags::flag("flag_a", "a");
     auto flag_b = qflags::flag("flag_b", "b");
@@ -141,7 +141,7 @@ TEST(flag_test, parse_long_flag)
     auto parser = qflags::parser();
 
     char const* argv[] = { "--flag" };
-    auto command_line = qflags::command_line(_countof(argv), argv);
+    auto command_line = qflags::command_line(argv);
 
     auto flag = qflags::flag("flag", "f");
 
@@ -167,7 +167,7 @@ TEST(flag_test, parse_invalid_short_flag)
     auto parser = qflags::parser();
 
     char const* argv[] = { "-f" };
-    auto command_line = qflags::command_line(_countof(argv), argv);
+    auto command_line = qflags::command_line(argv);
 
     {
         std::string errors;
@@ -186,7 +186,7 @@ TEST(flag_test, parse_invalid_short_flag_group)
     auto parser = qflags::parser();
 
     char const* argv[] = { "-adc" };
-    auto command_line = qflags::command_line(_countof(argv), argv);
+    auto command_line = qflags::command_line(argv);
 
     auto flag_a = qflags::flag("flag_a", "a");
     auto flag_b = qflags::flag("flag_b", "b");
@@ -212,7 +212,7 @@ TEST(flag_test, parse_multibyte_short_flag)
     auto parser = qflags::parser();
 
     wchar_t const* argv[] = { L"-\U00010338" };
-    auto command_line = qflags::command_line(_countof(argv), argv);
+    auto command_line = qflags::command_line(argv);
 
     auto flag = qflags::flag("flag", "\xf0\x90\x8c\xb8");
 
@@ -238,7 +238,7 @@ TEST(flag_test, parse_multibyte_short_flags)
     auto parser = qflags::parser();
 
     wchar_t const* argv[] = { L"-\U00010338\U00010342\U00010334" };
-    auto command_line = qflags::command_line(_countof(argv), argv);
+    auto command_line = qflags::command_line(argv);
 
     auto thiuth = qflags::flag("thiuth", "\xf0\x90\x8c\xb8");
     auto raida = qflags::flag("raida", "\xf0\x90\x8d\x82");

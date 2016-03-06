@@ -63,7 +63,7 @@ TEST_P(parse_integer, p)
     auto parser = qflags::parser();
 
     char const* argv[] = { "--foo", value_str.c_str() };
-    auto command_line = qflags::command_line(_countof(argv), argv);
+    auto command_line = qflags::command_line(argv);
 
     auto option = qflags::integer_option("foo");
 
@@ -118,7 +118,7 @@ TEST(integer_option_test, parse_integer_no_value)
     auto parser = qflags::parser();
 
     char const* argv[] = { "--foo" };
-    auto command_line = qflags::command_line(_countof(argv), argv);
+    auto command_line = qflags::command_line(argv);
 
     auto option = qflags::integer_option("foo");
 
@@ -145,7 +145,7 @@ TEST_P(parse_integer_bad_value, p)
     auto parser = qflags::parser();
 
     char const* argv[] = { "--foo", value_str.c_str() };
-    auto command_line = qflags::command_line(_countof(argv), argv);
+    auto command_line = qflags::command_line(argv);
 
     auto option = qflags::integer_option("foo");
 

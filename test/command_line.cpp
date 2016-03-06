@@ -66,9 +66,7 @@ TEST(command_line_test, wargv)
         L"--two",
         L"--three",
     };
-    int argc = _countof(wargv);
-
-    auto command_line = qflags::command_line(argc, wargv);
+    auto command_line = qflags::command_line(wargv);
 
     ASSERT_EQ(5, command_line.argc());
     EXPECT_EQ(std::string("test.exe"), command_line.argv(0));
@@ -93,9 +91,7 @@ TEST(command_list_test, wargv_utf16)
         L"--\u0926\u094b",                              // Devanagari
         L"--\U00010338\U00010342\U00010334\U00010339\U00010343",  // Gothic (non-BMP)
     };
-    int argc = _countof(wargv);
-
-    auto command_line = qflags::command_line(argc, wargv);
+    auto command_line = qflags::command_line(wargv);
 
     ASSERT_EQ(5, command_line.argc());
     EXPECT_EQ(std::string("\xd1\x84\xd0\xb5\xd1\x83\xd1\x84.exe"), command_line.argv(0));
@@ -188,9 +184,7 @@ TEST(command_list_test, argv_utf8)
         "--two",
         "--three",
     };
-    int argc = _countof(argv);
-
-    auto command_line = qflags::command_line(argc, argv, nullptr);
+    auto command_line = qflags::command_line(argv, nullptr);
 
     ASSERT_EQ(5, command_line.argc());
     EXPECT_EQ(std::string("test.exe"), command_line.argv(0));
@@ -215,9 +209,7 @@ TEST(command_list_test, argv_1251)
         "--\xe4\xe2\xe0",       // Russian '--два'
         "--\xf2\xf0\xe8",       // Russian '--три'
     };
-    int argc = _countof(argv);
-
-    auto command_line = qflags::command_line(argc, argv, "ru-RU");
+    auto command_line = qflags::command_line(argv, "ru-RU");
 
     ASSERT_EQ(5, command_line.argc());
     EXPECT_EQ(std::string("\xd1\x82\xd0\xb5\xd1\x81\xd1\x82.exe"), command_line.argv(0));
@@ -242,9 +234,7 @@ TEST(command_list_test, argv_1252)
         "--k\xe9t",         // Hungarian '--két'
         "--\xfer\xedr",     // Icelandic '--þrír'
     };
-    int argc = _countof(argv);
-
-    auto command_line = qflags::command_line(argc, argv, "en-US");
+    auto command_line = qflags::command_line(argv, "en-US");
 
     ASSERT_EQ(5, command_line.argc());
     EXPECT_EQ(std::string("pr\xc3\xb8ve.exe"), command_line.argv(0));
@@ -265,9 +255,7 @@ TEST(command_list_test, copy_assignment)
     auto dst = qflags::command_line(0, dst_argv);
     {
         char const* argv[] = { "one", "two", "three" };
-        int argc = _countof(argv);
-
-        auto src = qflags::command_line(argc, argv);
+        auto src = qflags::command_line(argv);
         dst = src; // copy assignment
     }
     ASSERT_EQ(3, dst.argc());
@@ -284,9 +272,7 @@ TEST(command_list_test, copy_assignment)
 TEST(command_list_test, copy_construction)
 {
     char const* argv[] = { "one", "two", "three" };
-    int argc = _countof(argv);
-
-    auto src = qflags::command_line(argc, argv);
+    auto src = qflags::command_line(argv);
     auto dst = qflags::command_line(src); // copy construction
     src = qflags::command_line(0, argv); // reset src
 

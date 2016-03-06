@@ -55,6 +55,17 @@ class command_line
     command_line(int argc, wchar_t const* const* argv);
 
     /**
+     * Initialize from an array of UTF-16 encoded wide-character command line
+     * argument strings. Automatically deduces argc from static array size.
+     *
+     *  @param argv
+     *      an array of UTF-16 encoded wide-character argument strings
+     */
+    template<size_t _Size>
+    command_line(wchar_t const* const (&argv)[_Size])
+        : command_line(static_cast<int>(_Size), argv) {}
+
+    /**
      * Initialize from a single command line argument string encoded using the
      * specified locale. Defaults to the 'user-preferred' local set by the
      * operating system.
@@ -81,6 +92,21 @@ class command_line
      *      a value of `nullptr` will suppress encoding conversion.
      */
     command_line(int argc, char const* const* argv, char const* locale = "");
+
+    /**
+     * Initialize from an array of command line argument strings encoded
+     * using the specified locale. Defaults to the 'user-preferred' locale set
+     * by the operating system. Automatically deduces argc from static array size.
+     *
+     *  @param argv
+     *      an array of argument strings
+     *  @param locale
+     *      a locale name used to interpret the strings in `argv`
+     *      a value of `nullptr` will suppress encoding conversion.
+     */
+    template<size_t _Size>
+    command_line(char const* const (&argv)[_Size], char const* locale = "")
+        : command_line(static_cast<int>(_Size), argv, locale) {}
 
     /**
      * Construct a copy from another command_line instance.

@@ -52,7 +52,7 @@ TEST(command_test, parse_command)
     auto parser = qflags::parser();
 
     char const* argv[] = { "foo" };
-    auto command_line = qflags::command_line(_countof(argv), argv);
+    auto command_line = qflags::command_line(argv);
 
     auto command = qflags::command("foo");
 
@@ -78,7 +78,7 @@ TEST(command_test, parse_command_arguments)
     auto parser = qflags::parser();
 
     char const* argv[] = { "foo", "--bar" };
-    auto command_line = qflags::command_line(_countof(argv), argv);
+    auto command_line = qflags::command_line(argv);
 
     auto command = qflags::command("foo");
 

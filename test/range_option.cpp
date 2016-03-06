@@ -58,7 +58,7 @@ TEST(range_option_test, parse_range_enumerated)
     ASSERT_EQ(true, parser.add_argument(&option));
     {
         char const* argv[] = { "--foo", "-1" };
-        auto command_line = qflags::command_line(_countof(argv), argv);
+        auto command_line = qflags::command_line(argv);
 
         std::string errors;
 
@@ -72,7 +72,7 @@ TEST(range_option_test, parse_range_enumerated)
 
     {
         char const* argv[] = { "--foo", "2" };
-        auto command_line = qflags::command_line(_countof(argv), argv);
+        auto command_line = qflags::command_line(argv);
 
         std::string errors;
 
@@ -97,7 +97,7 @@ TEST(range_option_test, parse_range_bounded)
     ASSERT_EQ(true, parser.add_argument(&option));
     {
         char const* argv[] = { "--foo", "-1" };
-        auto command_line = qflags::command_line(_countof(argv), argv);
+        auto command_line = qflags::command_line(argv);
 
         std::string errors;
 
@@ -111,7 +111,7 @@ TEST(range_option_test, parse_range_bounded)
 
     {
         char const* argv[] = { "--foo", "2" };
-        auto command_line = qflags::command_line(_countof(argv), argv);
+        auto command_line = qflags::command_line(argv);
 
         std::string errors;
 
@@ -133,7 +133,7 @@ TEST(range_option_test, parse_range_no_value)
     auto parser = qflags::parser();
 
     char const* argv[] = { "--foo" };
-    auto command_line = qflags::command_line(_countof(argv), argv);
+    auto command_line = qflags::command_line(argv);
 
     auto option = qflags::range_option("foo", { 0 }, 0);
 
@@ -156,7 +156,7 @@ TEST(range_option_test, parse_invalid_range_enumerated)
     auto parser = qflags::parser();
 
     char const* argv[] = { "--foo", "1" };
-    auto command_line = qflags::command_line(_countof(argv), argv);
+    auto command_line = qflags::command_line(argv);
 
     auto option = qflags::range_option("foo", { 0 }, 0);
 
@@ -183,7 +183,7 @@ TEST(range_option_test, parse_invalid_range_bounded)
     ASSERT_EQ(true, parser.add_argument(&option));
     {
         char const* argv[] = { "--foo", "-2" };
-        auto command_line = qflags::command_line(_countof(argv), argv);
+        auto command_line = qflags::command_line(argv);
 
         std::string errors;
 
@@ -193,7 +193,7 @@ TEST(range_option_test, parse_invalid_range_bounded)
 
     {
         char const* argv[] = { "--foo", "2" };
-        auto command_line = qflags::command_line(_countof(argv), argv);
+        auto command_line = qflags::command_line(argv);
 
         std::string errors;
 

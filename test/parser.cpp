@@ -100,7 +100,7 @@ TEST(parser_test, parse_empty)
 TEST(parser_test, parse_no_arguments)
 {
     char const* argv[] = { "one", "two", "three" };
-    auto command_line = qflags::command_line(_countof(argv), argv);
+    auto command_line = qflags::command_line(argv);
 
     auto parser = qflags::parser();
 
@@ -119,7 +119,7 @@ TEST(parser_test, parse_no_arguments)
 TEST(parser_test, parse_skipped_arguments)
 {
     char const* argv[] = { "one", "--two", "three" };
-    auto command_line = qflags::command_line(_countof(argv), argv);
+    auto command_line = qflags::command_line(argv);
 
     auto parser = qflags::parser();
 
@@ -142,7 +142,7 @@ TEST(parser_test, parse_skipped_arguments)
 TEST(parser_test, parse_terminator_argument)
 {
     char const* argv[] = { "--foo", "--", "--bar" };
-    auto command_line = qflags::command_line(_countof(argv), argv);
+    auto command_line = qflags::command_line(argv);
 
     auto parser = qflags::parser();
 

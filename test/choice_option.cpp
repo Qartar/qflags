@@ -58,7 +58,7 @@ TEST(choice_option_test, parse_choice)
     ASSERT_EQ(true, parser.add_argument(&option));
     {
         char const* argv[] = { "--foo", "bar" };
-        auto command_line = qflags::command_line(_countof(argv), argv);
+        auto command_line = qflags::command_line(argv);
 
         std::string errors;
 
@@ -72,7 +72,7 @@ TEST(choice_option_test, parse_choice)
 
     {
         char const* argv[] = { "--foo", "baz" };
-        auto command_line = qflags::command_line(_countof(argv), argv);
+        auto command_line = qflags::command_line(argv);
 
         std::string errors;
 
@@ -94,7 +94,7 @@ TEST(choice_option_test, parse_choice_no_value)
     auto parser = qflags::parser();
 
     char const* argv[] = { "--foo" };
-    auto command_line = qflags::command_line(_countof(argv), argv);
+    auto command_line = qflags::command_line(argv);
 
     auto option = qflags::choice_option("foo", { "bar" }, "bar");
 
@@ -117,7 +117,7 @@ TEST(choice_option_test, parse_invalid_choice)
     auto parser = qflags::parser();
 
     char const* argv[] = { "--foo", "baz" };
-    auto command_line = qflags::command_line(_countof(argv), argv);
+    auto command_line = qflags::command_line(argv);
 
     auto option = qflags::choice_option("foo", { "bar" }, "bar");
 

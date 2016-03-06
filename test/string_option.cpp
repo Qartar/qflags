@@ -55,7 +55,7 @@ TEST(string_option_test, parse_substring)
     auto parser = qflags::parser();
 
     char const* argv[] = { "--foobar", "baz" };
-    auto command_line = qflags::command_line(_countof(argv), argv);
+    auto command_line = qflags::command_line(argv);
 
     auto option = qflags::string_option("foo");
 
@@ -77,7 +77,7 @@ TEST(string_option_test, parse_string)
     auto parser = qflags::parser();
 
     char const* argv[] = { "--foo", "bar" };
-    auto command_line = qflags::command_line(_countof(argv), argv);
+    auto command_line = qflags::command_line(argv);
 
     auto option = qflags::string_option("foo");
 
@@ -103,7 +103,7 @@ TEST(string_option_test, parse_string_equals)
     auto parser = qflags::parser();
 
     char const* argv[] = { "--foo=bar" };
-    auto command_line = qflags::command_line(_countof(argv), argv);
+    auto command_line = qflags::command_line(argv);
 
     auto option = qflags::string_option("foo");
 
@@ -129,7 +129,7 @@ TEST(string_option_test, parse_short_string)
     auto parser = qflags::parser();
 
     char const* argv[] = { "-f", "bar" };
-    auto command_line = qflags::command_line(_countof(argv), argv);
+    auto command_line = qflags::command_line(argv);
 
     auto option = qflags::string_option("foo", "f", "");
 
@@ -156,7 +156,7 @@ TEST(string_option_test, parse_short_string_equals)
     auto parser = qflags::parser();
 
     char const* argv[] = { "-f=bar" };
-    auto command_line = qflags::command_line(_countof(argv), argv);
+    auto command_line = qflags::command_line(argv);
 
     auto option = qflags::string_option("foo", "f", "");
 
@@ -182,7 +182,7 @@ TEST(string_option_test, parse_string_no_value)
     auto parser = qflags::parser();
 
     char const* argv[] = { "--foo" };
-    auto command_line = qflags::command_line(_countof(argv), argv);
+    auto command_line = qflags::command_line(argv);
 
     auto option = qflags::string_option("foo");
 

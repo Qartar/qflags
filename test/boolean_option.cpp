@@ -63,7 +63,7 @@ TEST_P(parse_boolean, p)
     auto parser = qflags::parser();
 
     char const* argv[] = { "--foo", value_str.c_str() };
-    auto command_line = qflags::command_line(_countof(argv), argv);
+    auto command_line = qflags::command_line(argv);
 
     auto option = qflags::boolean_option("foo");
 
@@ -108,7 +108,7 @@ TEST(boolean_option_test, parse_boolean_no_value)
     auto parser = qflags::parser();
 
     char const* argv[] = { "--foo" };
-    auto command_line = qflags::command_line(_countof(argv), argv);
+    auto command_line = qflags::command_line(argv);
 
     auto option = qflags::boolean_option("foo");
 
