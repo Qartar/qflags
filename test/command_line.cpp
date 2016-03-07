@@ -104,22 +104,70 @@ TEST(command_list_test, wargv_utf16)
 
 ////////////////////////////////////////////////////////////////////////////////
 /**
- * Test that a single character string is correctly delimited and converted to
- * UTF-8.
+ * Test that a single character string is correctly delimited.
  */
 TEST(command_line_test, args)
 {
-    char const* args = "test.exe -abc --one --two --three";
+    // "a b c" d e
+    {
+        char const* args = "\"a b c\" d e";
 
-    auto command_line = qflags::command_line(args);
+        auto command_line = qflags::command_line(args);
 
-    ASSERT_EQ(5, command_line.argc());
-    EXPECT_EQ(std::string("test.exe"), command_line.argv(0));
-    EXPECT_EQ(std::string("-abc"), command_line.argv(1));
-    EXPECT_EQ(std::string("--one"), command_line.argv(2));
-    EXPECT_EQ(std::string("--two"), command_line.argv(3));
-    EXPECT_EQ(std::string("--three"), command_line.argv(4));
-    EXPECT_EQ(nullptr, command_line.argv(5));
+        ASSERT_EQ(3, command_line.argc());
+        EXPECT_EQ(std::string("a b c"), command_line.argv(0));
+        EXPECT_EQ(std::string("d"), command_line.argv(1));
+        EXPECT_EQ(std::string("e"), command_line.argv(2));
+        EXPECT_EQ(nullptr, command_line.argv(3));
+    }
+    // "ab\"c" "\\" d
+    {
+        char const* args = "\"ab\\\"c\" \"\\\\\" d";
+
+        auto command_line = qflags::command_line(args);
+
+        ASSERT_EQ(3, command_line.argc());
+        EXPECT_EQ(std::string("ab\"c"), command_line.argv(0));
+        EXPECT_EQ(std::string("\\"), command_line.argv(1));
+        EXPECT_EQ(std::string("d"), command_line.argv(2));
+        EXPECT_EQ(nullptr, command_line.argv(3));
+    }
+    // a\\\b d"e f"g h
+    {
+        char const* args = "a\\\\\\b d\"e f\"g h";
+
+        auto command_line = qflags::command_line(args);
+
+        ASSERT_EQ(3, command_line.argc());
+        EXPECT_EQ(std::string("a\\\\\\b"), command_line.argv(0));
+        EXPECT_EQ(std::string("de fg"), command_line.argv(1));
+        EXPECT_EQ(std::string("h"), command_line.argv(2));
+        EXPECT_EQ(nullptr, command_line.argv(3));
+    }
+    // a\\\"b c d
+    {
+        char const* args = "a\\\\\\\"b c d";
+
+        auto command_line = qflags::command_line(args);
+
+        ASSERT_EQ(3, command_line.argc());
+        EXPECT_EQ(std::string("a\\\"b"), command_line.argv(0));
+        EXPECT_EQ(std::string("c"), command_line.argv(1));
+        EXPECT_EQ(std::string("d"), command_line.argv(2));
+        EXPECT_EQ(nullptr, command_line.argv(3));
+    }
+    // a\\\\"b c" d e
+    {
+        char const* args = "a\\\\\\\\\"b c\" d e";
+
+        auto command_line = qflags::command_line(args);
+
+        ASSERT_EQ(3, command_line.argc());
+        EXPECT_EQ(std::string("a\\\\b c"), command_line.argv(0));
+        EXPECT_EQ(std::string("d"), command_line.argv(1));
+        EXPECT_EQ(std::string("e"), command_line.argv(2));
+        EXPECT_EQ(nullptr, command_line.argv(3));
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

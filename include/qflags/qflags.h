@@ -135,6 +135,12 @@ class command_line
     std::vector<char*> _argv;   //!< Argument string pointers
 
   private:
+    //! Initialize from UTF-16 encoded wide-character string.
+    void _init(wchar_t const* args);
+
+    //! Initialize from UTF-8 encoded character string.
+    void _init(char const* args);
+
     //! Initialize from array of UTF-16 encoded wide-character strings.
     void _init(int argc, wchar_t const* const* argv);
 
