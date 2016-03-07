@@ -64,7 +64,7 @@ TEST(string_option_test, parse_substring)
         std::string errors;
 
         ASSERT_EQ(false, parser.parse(command_line, &errors));
-        EXPECT_NE(0, errors.length());
+        EXPECT_NE(0u, errors.length());
     }
 }
 
@@ -90,7 +90,7 @@ TEST(string_option_test, parse_string)
         EXPECT_EQ("bar", static_cast<std::string>(option));
         EXPECT_EQ(2, parser.argc());
         EXPECT_EQ(0, parser.remaining_argc());
-        EXPECT_EQ(0, errors.length());
+        EXPECT_EQ(0u, errors.length());
     }
 }
 
@@ -116,7 +116,7 @@ TEST(string_option_test, parse_string_equals)
         EXPECT_EQ("bar", static_cast<std::string>(option));
         EXPECT_EQ(1, parser.argc());
         EXPECT_EQ(0, parser.remaining_argc());
-        EXPECT_EQ(0, errors.length());
+        EXPECT_EQ(0u, errors.length());
     }
 }
 
@@ -142,7 +142,7 @@ TEST(string_option_test, parse_short_string)
         EXPECT_EQ("bar", static_cast<std::string>(option));
         EXPECT_EQ(2, parser.argc());
         EXPECT_EQ(0, parser.remaining_argc());
-        EXPECT_EQ(0, errors.length());
+        EXPECT_EQ(0u, errors.length());
     }
 }
 
@@ -169,7 +169,7 @@ TEST(string_option_test, parse_short_string_concat)
         EXPECT_EQ("bar", static_cast<std::string>(option));
         EXPECT_EQ(1, parser.argc());
         EXPECT_EQ(0, parser.remaining_argc());
-        EXPECT_EQ(0, errors.length());
+        EXPECT_EQ(0u, errors.length());
     }
 }
 
@@ -191,6 +191,6 @@ TEST(string_option_test, parse_string_no_value)
         std::string errors;
 
         EXPECT_EQ(false, parser.parse(command_line, &errors));
-        EXPECT_NE(0, errors.length());
+        EXPECT_NE(0u, errors.length());
     }
 }

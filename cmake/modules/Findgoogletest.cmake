@@ -24,7 +24,7 @@ if(EXISTS ${GOOGLETEST_PATH}/CMakeLists.txt)
 
     # If building with GCC disable a set of warnings generated in test code.
     if(${CMAKE_CXX_COMPILER_ID} STREQUAL GNU)
-        set(compile_options "-w") # Disable all warnings :(
+        set(compile_options "-Wno-conversion-null")
         foreach(target gtest gtest_main gmock gmock_main)
             target_compile_options(${target} PUBLIC ${compile_options})
         endforeach()

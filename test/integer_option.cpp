@@ -78,7 +78,7 @@ TEST_P(parse_integer, p)
         EXPECT_EQ(value_str, static_cast<std::string>(option));
         EXPECT_EQ(2, parser.argc());
         EXPECT_EQ(0, parser.remaining_argc());
-        EXPECT_EQ(0, errors.length());
+        EXPECT_EQ(0u, errors.length());
     }
 }
 
@@ -127,7 +127,7 @@ TEST(integer_option_test, parse_integer_no_value)
         std::string errors;
 
         EXPECT_EQ(false, parser.parse(command_line, &errors));
-        EXPECT_NE(0, errors.length());
+        EXPECT_NE(0u, errors.length());
     }
 }
 
@@ -154,7 +154,7 @@ TEST_P(parse_integer_bad_value, p)
         std::string errors;
 
         ASSERT_EQ(false, parser.parse(command_line, &errors));
-        EXPECT_NE(0, errors.length());
+        EXPECT_NE(0u, errors.length());
     }
 }
 

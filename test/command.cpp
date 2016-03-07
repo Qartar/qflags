@@ -65,7 +65,7 @@ TEST(command_test, parse_command)
         EXPECT_EQ(true, static_cast<bool>(command));
         EXPECT_EQ(1, parser.argc());
         EXPECT_EQ(0, parser.remaining_argc());
-        EXPECT_EQ(0, errors.length());
+        EXPECT_EQ(0u, errors.length());
     }
 }
 
@@ -95,7 +95,7 @@ TEST(command_test, parse_command_arguments)
         EXPECT_EQ(true, static_cast<bool>(command));
         EXPECT_EQ(2, parser.argc());
         EXPECT_EQ(0, parser.remaining_argc());
-        EXPECT_EQ(0, errors.length());
+        EXPECT_EQ(0u, errors.length());
 
         EXPECT_EQ(true, static_cast<bool>(command["bar"]));
         EXPECT_EQ(true, static_cast<bool>(flag));

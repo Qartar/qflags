@@ -19,7 +19,7 @@ TEST(parser_test, add_multiple)
 
     EXPECT_EQ(true, parser.add_argument(&flag));
     EXPECT_EQ(true, parser.add_argument(&flag));
-    EXPECT_NE(0, testing::internal::GetCapturedStderr().length());
+    EXPECT_NE(0u, testing::internal::GetCapturedStderr().length());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -37,7 +37,7 @@ TEST(parser_test, add_duplicate)
 
     EXPECT_EQ(true, parser.add_argument(&flag1));
     EXPECT_EQ(false, parser.add_argument(&flag2));
-    EXPECT_NE(0, testing::internal::GetCapturedStderr().length());
+    EXPECT_NE(0u, testing::internal::GetCapturedStderr().length());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -55,7 +55,7 @@ TEST(parser_test, add_short_duplicate)
 
     EXPECT_EQ(true, parser.add_argument(&flag1));
     EXPECT_EQ(false, parser.add_argument(&flag2));
-    EXPECT_NE(0, testing::internal::GetCapturedStderr().length());
+    EXPECT_NE(0u, testing::internal::GetCapturedStderr().length());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -71,7 +71,7 @@ TEST(parser_test, add_invalid_name)
     testing::internal::CaptureStderr();
 
     EXPECT_EQ(false, parser.add_argument(&equals));
-    EXPECT_NE(0, testing::internal::GetCapturedStderr().length());
+    EXPECT_NE(0u, testing::internal::GetCapturedStderr().length());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -90,7 +90,7 @@ TEST(parser_test, parse_empty)
     EXPECT_EQ(true, parser.parse(command_line, &errors));
     EXPECT_EQ(0, parser.argc());
     EXPECT_EQ(0, parser.remaining_argc());
-    EXPECT_EQ(0, errors.length());
+    EXPECT_EQ(0u, errors.length());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -109,7 +109,7 @@ TEST(parser_test, parse_no_arguments)
     EXPECT_EQ(true, parser.parse(command_line, &errors));
     EXPECT_EQ(3, parser.argc());
     EXPECT_EQ(3, parser.remaining_argc());
-    EXPECT_EQ(0, errors.length());
+    EXPECT_EQ(0u, errors.length());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -132,7 +132,7 @@ TEST(parser_test, parse_skipped_arguments)
     EXPECT_EQ(true, parser.parse(command_line, &errors));
     EXPECT_EQ(3, parser.argc());
     EXPECT_EQ(2, parser.remaining_argc());
-    EXPECT_EQ(0, errors.length());
+    EXPECT_EQ(0u, errors.length());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -159,5 +159,5 @@ TEST(parser_test, parse_terminator_argument)
     EXPECT_EQ(false, static_cast<bool>(bar));
     EXPECT_EQ(3, parser.argc());
     EXPECT_EQ(1, parser.remaining_argc());
-    EXPECT_EQ(0, errors.length());
+    EXPECT_EQ(0u, errors.length());
 }

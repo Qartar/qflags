@@ -50,7 +50,7 @@ TEST(flag_test, parse_short_flag)
         EXPECT_EQ(true, static_cast<bool>(flag));
         EXPECT_EQ(1, parser.argc());
         EXPECT_EQ(0, parser.remaining_argc());
-        EXPECT_EQ(0, errors.length());
+        EXPECT_EQ(0u, errors.length());
     }
 }
 
@@ -84,7 +84,7 @@ TEST(flag_test, parse_short_flags)
         EXPECT_EQ(true, static_cast<bool>(flag_a));
         EXPECT_EQ(1, parser.argc());
         EXPECT_EQ(0, parser.remaining_argc());
-        EXPECT_EQ(0, errors.length());
+        EXPECT_EQ(0u, errors.length());
     }
 }
 
@@ -128,7 +128,7 @@ TEST(flag_test, parse_short_flags_groups)
         EXPECT_EQ(false, static_cast<bool>(parser["flag_g"]));
         EXPECT_EQ(2, parser.argc());
         EXPECT_EQ(0, parser.remaining_argc());
-        EXPECT_EQ(0, errors.length());
+        EXPECT_EQ(0u, errors.length());
     }
 }
 
@@ -154,7 +154,7 @@ TEST(flag_test, parse_long_flag)
         EXPECT_EQ(true, static_cast<bool>(flag));
         EXPECT_EQ(1, parser.argc());
         EXPECT_EQ(0, parser.remaining_argc());
-        EXPECT_EQ(0, errors.length());
+        EXPECT_EQ(0u, errors.length());
     }
 }
 
@@ -173,7 +173,7 @@ TEST(flag_test, parse_invalid_short_flag)
         std::string errors;
 
         EXPECT_EQ(false, parser.parse(command_line, &errors));
-        EXPECT_NE(0, errors.length());
+        EXPECT_NE(0u, errors.length());
     }
 }
 
@@ -199,7 +199,7 @@ TEST(flag_test, parse_invalid_short_flag_group)
         std::string errors;
 
         EXPECT_EQ(false, parser.parse(command_line, &errors));
-        EXPECT_NE(0, errors.length());
+        EXPECT_NE(0u, errors.length());
     }
 }
 
@@ -225,7 +225,7 @@ TEST(flag_test, parse_multibyte_short_flag)
         EXPECT_EQ(true, static_cast<bool>(flag));
         EXPECT_EQ(1, parser.argc());
         EXPECT_EQ(0, parser.remaining_argc());
-        EXPECT_EQ(0, errors.length());
+        EXPECT_EQ(0u, errors.length());
     }
 }
 
@@ -259,6 +259,6 @@ TEST(flag_test, parse_multibyte_short_flags)
         EXPECT_EQ(true, static_cast<bool>(aihvus));
         EXPECT_EQ(1, parser.argc());
         EXPECT_EQ(0, parser.remaining_argc());
-        EXPECT_EQ(0, errors.length());
+        EXPECT_EQ(0u, errors.length());
     }
 }

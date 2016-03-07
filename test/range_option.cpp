@@ -67,7 +67,7 @@ TEST(range_option_test, parse_range_enumerated)
         EXPECT_EQ(-1, static_cast<int64_t>(option));
         EXPECT_EQ(2, parser.argc());
         EXPECT_EQ(0, parser.remaining_argc());
-        EXPECT_EQ(0, errors.length());
+        EXPECT_EQ(0u, errors.length());
     }
 
     {
@@ -81,7 +81,7 @@ TEST(range_option_test, parse_range_enumerated)
         EXPECT_EQ(2, static_cast<int64_t>(option));
         EXPECT_EQ(2, parser.argc());
         EXPECT_EQ(0, parser.remaining_argc());
-        EXPECT_EQ(0, errors.length());
+        EXPECT_EQ(0u, errors.length());
     }
 }
 
@@ -106,7 +106,7 @@ TEST(range_option_test, parse_range_bounded)
         EXPECT_EQ(-1, static_cast<int64_t>(option));
         EXPECT_EQ(2, parser.argc());
         EXPECT_EQ(0, parser.remaining_argc());
-        EXPECT_EQ(0, errors.length());
+        EXPECT_EQ(0u, errors.length());
     }
 
     {
@@ -120,7 +120,7 @@ TEST(range_option_test, parse_range_bounded)
         EXPECT_EQ(2, static_cast<int64_t>(option));
         EXPECT_EQ(2, parser.argc());
         EXPECT_EQ(0, parser.remaining_argc());
-        EXPECT_EQ(0, errors.length());
+        EXPECT_EQ(0u, errors.length());
     }
 }
 
@@ -142,7 +142,7 @@ TEST(range_option_test, parse_range_no_value)
         std::string errors;
 
         EXPECT_EQ(false, parser.parse(command_line, &errors));
-        EXPECT_NE(0, errors.length());
+        EXPECT_NE(0u, errors.length());
     }
 }
 
@@ -165,7 +165,7 @@ TEST(range_option_test, parse_invalid_range_enumerated)
         std::string errors;
 
         ASSERT_EQ(false, parser.parse(command_line, &errors));
-        EXPECT_NE(0, errors.length());
+        EXPECT_NE(0u, errors.length());
     }
 }
 
@@ -188,7 +188,7 @@ TEST(range_option_test, parse_invalid_range_bounded)
         std::string errors;
 
         ASSERT_EQ(false, parser.parse(command_line, &errors));
-        EXPECT_NE(0, errors.length());
+        EXPECT_NE(0u, errors.length());
     }
 
     {
@@ -198,6 +198,6 @@ TEST(range_option_test, parse_invalid_range_bounded)
         std::string errors;
 
         ASSERT_EQ(false, parser.parse(command_line, &errors));
-        EXPECT_NE(0, errors.length());
+        EXPECT_NE(0u, errors.length());
     }
 }
