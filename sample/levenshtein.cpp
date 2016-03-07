@@ -24,15 +24,15 @@
  * @return
  *      the Levenshtein distance between `a` and `b`
  */
-int levenshtein(char const* a, char const* b, bool ignore_case, bool print_matrix)
+size_t levenshtein(char const* a, char const* b, bool ignore_case, bool print_matrix)
 {
     size_t len_a = strlen(a); //!< Length of string `a`
     size_t len_b = strlen(b); //!< Length of string `b`
 
     //! Adjacency matrix for holding edit distances between prefix strings.
-    std::vector<int> adjacency((len_a + 1) * (len_b + 1), 0);
+    std::vector<size_t> adjacency((len_a + 1) * (len_b + 1), 0);
     //! Convenience function for setting and retreiving data in the matrix.
-    auto idx = [&](size_t x, size_t y) -> int& {
+    auto idx = [&](size_t x, size_t y) -> size_t& {
         return adjacency[(len_a + 1) * y + x];
     };
 
@@ -62,9 +62,9 @@ int levenshtein(char const* a, char const* b, bool ignore_case, bool print_matri
             // Otherwise the cost is the minimum of the cost of deletion,
             // insertion, or substitution.
             else {
-                int deletion_cost = idx(ii, jj + 1) + 1;
-                int insertion_cost = idx(ii + 1, jj) + 1;
-                int substitution_cost = idx(ii, jj) + 1;
+                size_t deletion_cost = idx(ii, jj + 1) + 1;
+                size_t insertion_cost = idx(ii + 1, jj) + 1;
+                size_t substitution_cost = idx(ii, jj) + 1;
 
                 idx(ii + 1, jj + 1) = std::min({deletion_cost,
                                                 insertion_cost,
@@ -83,7 +83,7 @@ int levenshtein(char const* a, char const* b, bool ignore_case, bool print_matri
         for (size_t ii = 0; ii <= len_a; ++ii) {
             fprintf(stdout, " %1.1s ", ii ? a + ii - 1 : "");
             for (size_t jj = 0; jj <= len_b; ++jj) {
-                fprintf(stdout, "%2d ", idx(ii, jj));
+                fprintf(stdout, "%2llu ", (unsigned long long)idx(ii, jj));
             }
             fprintf(stdout, "\n");
         }
@@ -100,16 +100,16 @@ int levenshtein(char const* a, char const* b, bool ignore_case, bool print_matri
  */
 void find_nearest(int argc, char const* const* argv, bool ignore_case, bool print_matrix)
 {
-    std::tuple<int, int, int> nearest = std::make_tuple(INT_MAX,
-                                                        INT_MAX,
-                                                        INT_MAX);
+    std::tuple<size_t, int, int> nearest = std::make_tuple(SIZE_MAX,
+                                                           INT_MAX,
+                                                           INT_MAX);
 
     for (int ii = 1; ii < argc; ++ii) {
         for (int jj = 0; jj < ii; ++jj) {
-            int distance = levenshtein(argv[ii],
-                                       argv[jj],
-                                       ignore_case,
-                                       print_matrix);
+            size_t distance = levenshtein(argv[ii],
+                                          argv[jj],
+                                          ignore_case,
+                                          print_matrix);
 
             if (distance < std::get<0>(nearest)) {
                 nearest = std::make_tuple(distance, ii, jj);
@@ -118,8 +118,8 @@ void find_nearest(int argc, char const* const* argv, bool ignore_case, bool prin
     }
 
     fprintf(stdout,
-            "%d %s %s\n",
-            std::get<0>(nearest),
+            "%llu %s %s\n",
+            (unsigned long long)std::get<0>(nearest),
             argv[std::get<1>(nearest)],
             argv[std::get<2>(nearest)]);
 }
@@ -147,10 +147,11 @@ int main(int argc, char* argv[])
 
     // Compare two strings and print their edit distance.
     if (parser.remaining_argc() == 2) {
-        fprintf(stdout, "%d\n", levenshtein(parser.remaining_argv()[1],
-                                            parser.remaining_argv()[2],
-                                            ignore_case,
-                                            print_matrix));
+        unsigned long long distance = levenshtein(parser.remaining_argv()[1],
+                                                  parser.remaining_argv()[2],
+                                                  ignore_case,
+                                                  print_matrix);
+        fprintf(stdout, "%llu\n", distance);
     }
     // Compare multiple strings and find the two nearest strings.
     else if (parser.remaining_argc() > 2) {
