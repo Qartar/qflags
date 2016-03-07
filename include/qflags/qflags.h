@@ -36,6 +36,19 @@ namespace qflags {
 class command_line
 {
   public:
+
+    /**
+     * Functor for specifying the default locale on different platforms.
+     */
+    struct default_locale {
+#if defined(__MINGW32__)
+        // Only C and POSIX locales are supported on MinGW so suppress conversion.
+        operator const char*() const { return nullptr; };
+#else //!defined(__MINGW32__)
+        operator const char*() const { return ""; };
+#endif //!defined(__MINGW32__)
+    };
+
     /**
      * Initialize from a UTF-16 encoded wide-character command line string.
      *  e.g. the return value of GetCommandLineW() on Windows.
@@ -79,7 +92,7 @@ class command_line
      *      a locale name used to interpret the string `args`
      *      a value of `nullptr` will suppress encoding conversion.
      */
-    command_line(char const* args, char const* locale = "");
+    command_line(char const* args, char const* locale = default_locale());
 
     /**
      * Initialize from an array of command line argument strings encoded
@@ -94,7 +107,7 @@ class command_line
      *      a locale name used to interpret the strings in `argv`
      *      a value of `nullptr` will suppress encoding conversion.
      */
-    command_line(int argc, char const* const* argv, char const* locale = "");
+    command_line(int argc, char const* const* argv, char const* locale = default_locale());
 
     /**
      * Initialize from an array of command line argument strings encoded
@@ -108,7 +121,7 @@ class command_line
      *      a value of `nullptr` will suppress encoding conversion.
      */
     template<size_t _Size>
-    command_line(char const* const (&argv)[_Size], char const* locale = "")
+    command_line(char const* const (&argv)[_Size], char const* locale = default_locale())
         : command_line(static_cast<int>(_Size), argv, locale) {}
 
     /**
