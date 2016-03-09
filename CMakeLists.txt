@@ -27,11 +27,12 @@ if(MSVC)
         set(compiler_flags "/W4 /WX /MP /sdl")
 
     elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL Clang)
-        # -Wall     Enable all warnings
+        # -Wall     Enable (almost) all warnings
+        # -Wextra   Enable additional warnings
         # -Werror   Warnings as errors
         # /MP       Multi-process compilation
         # /sdl      Additional security checks
-        set(compiler_flags "-Wall -Werror /MP /sdl")
+        set(compiler_flags "-Wall -Wextra -Werror -Woverloaded-virtual -Wtype-limits /MP /sdl")
 
         # Set gmock and gtest as system headers in order to suppress warnings.
         set(compiler_flags "${compiler_flags} --system-header-prefix=gtest/")
@@ -61,12 +62,13 @@ if(MSVC)
     # Enable Unicode
     add_definitions(-D_UNICODE -DUNICODE)
 
-elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL GNU)
+elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL GNU OR ${CMAKE_CXX_COMPILER_ID} STREQUAL Clang)
 
-    # -Wall         Enable all warnings
+    # -Wall         Enable (almost) all warnings
+    # -Wextra       Enable additional warnings
     # -Werror       Warnings as errors
     # -std=c++11    Use C++11 language features
-    set(compiler_flags "-Wall -Werror -Wtype-limits -Wunused-parameter -std=c++11")
+    set(compiler_flags "-Wall -Wextra -Werror -Woverloaded-virtual -Wtype-limits -Wunused-parameter -std=c++11")
 
     foreach (flag_var
              CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
@@ -146,6 +148,31 @@ if(TARGET gtest)
 
     target_link_libraries(qflags-static_test qflags-static gtest gtest_main)
 
+    # Set some Clang specific compiler options
+    if(${CMAKE_CXX_COMPILER_ID} STREQUAL Clang)
+        set(compile_options -Wno-unused-value
+                            -fstack-protector-all
+        )
+        # Some options do not work with Clang/C2
+        if(NOT MSVC)
+            set(compile_options ${compile_options}
+                                -fsanitize-undefined-trap-on-error
+            )
+        endif()
+    # Set some GCC specific compiler options
+    elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL GNU)
+        set(compile_options -Wno-conversion-null
+                            -fsanitize=undefined
+                            -fsanitize-undefined-trap-on-error
+        )
+        # Some options do not work with MinGW
+        if(NOT MINGW)
+            set(compile_options ${compile_options}
+                                -fstack-protector-all
+            )
+        endif()
+    endif()
+
     foreach(target
             qflags_test qflags-static_test)
 
@@ -153,13 +180,10 @@ if(TARGET gtest)
                            POST_BUILD
                            COMMAND ${target})
 
-        # Disable unused value warnings when using Clang
-        if(${CMAKE_CXX_COMPILER_ID} STREQUAL Clang)
-            target_compile_options(${target}
-                PUBLIC
-                    -Wno-unused-value
-            )
-        endif()
+        target_compile_options(${target}
+            PUBLIC
+                ${compile_options}
+        )
     endforeach()
 
 endif()

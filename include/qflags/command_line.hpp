@@ -40,7 +40,7 @@ QFLAGS_INLINE command_line::command_line(char const* args, char const* locale)
     // not support conversions between multibyte encodings.
     else {
         auto conv = new std::codecvt_byname<wchar_t, char, std::mbstate_t>(locale);
-        std::mbstate_t state = {0};
+        std::mbstate_t state = std::mbstate_t();
 
         // Count up the number of wide characters required.
         auto args_len = strlen(args);
@@ -81,7 +81,7 @@ QFLAGS_INLINE command_line::command_line(int argc, char const* const* argv, char
     // not support conversions between multibyte encodings.
     else {
         auto conv = new std::codecvt_byname<wchar_t, char, std::mbstate_t>(locale);
-        std::mbstate_t state = {0};
+        std::mbstate_t state = std::mbstate_t();
 
         // Count up the number of wide characters required.
         int total_length_in_characters = 0;
@@ -283,7 +283,7 @@ QFLAGS_INLINE void command_line::_init(char const* args)
 QFLAGS_INLINE void command_line::_init(int argc, wchar_t const* const* wargv)
 {
     auto conv = new std::codecvt_utf8_utf16<wchar_t>();
-    std::mbstate_t state = {0};
+    std::mbstate_t state = std::mbstate_t();
 
     // codecvt cannot find the length of an output string so count up the number
     // of wide characters, reserve the 'worst-case' size and shrink afterwards.

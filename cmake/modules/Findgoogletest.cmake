@@ -16,17 +16,9 @@ if(EXISTS ${GOOGLETEST_PATH}/CMakeLists.txt)
     # If the toolchain was set to use Microsoft's Clang/C2 compilers then force
     # gmock and gtest to use the normal C1/C2 compiler because otherwise all of
     # their Microsoft specific configuration would need to be redone.
-    if(MSVC AND ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
+    if(MSVC AND ${CMAKE_CXX_COMPILER_ID} STREQUAL Clang)
         foreach(target gtest gtest_main gmock gmock_main)
             set_target_properties(${target} PROPERTIES VS_PLATFORM_TOOLSET_OVERRIDE "v140")
-        endforeach()
-    endif()
-
-    # If building with GCC disable a set of warnings generated in test code.
-    if(${CMAKE_CXX_COMPILER_ID} STREQUAL GNU)
-        set(compile_options "-Wno-conversion-null")
-        foreach(target gtest gtest_main gmock gmock_main)
-            target_compile_options(${target} PUBLIC ${compile_options})
         endforeach()
     endif()
 endif()
