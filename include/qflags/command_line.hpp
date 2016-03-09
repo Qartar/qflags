@@ -3,6 +3,7 @@
 
 #include <qflags/qflags.h>
 
+#include <cassert>
 #include <locale>
 #include <codecvt>
 
@@ -164,6 +165,8 @@ QFLAGS_INLINE command_line& command_line::operator=(command_line const& other)
  */
 QFLAGS_INLINE void command_line::_init(wchar_t const* wargs)
 {
+    assert(wargs && "wargs cannot be null!");
+
     // Convert wide-character argument string to UTF-8 and parse.
     std::wstring_convert<std::codecvt_utf8<wchar_t>> conv;
     std::string args = conv.to_bytes(wargs);
@@ -180,8 +183,10 @@ QFLAGS_INLINE void command_line::_init(wchar_t const* wargs)
  */
 QFLAGS_INLINE void command_line::_init(char const* args)
 {
+    assert(args && "args cannot be null!");
+
     // Skip leading whitespace.
-    while (args && isblank((unsigned char)*args)) {
+    while (isblank((unsigned char)*args)) {
         ++args;
     }
 
@@ -189,7 +194,7 @@ QFLAGS_INLINE void command_line::_init(char const* args)
     _args.resize((args_end - args) + 2);
     auto argv_ptr = _args.data();
 
-    while (args && *args) {
+    while (*args) {
 
         bool inside_quotes = false;
         _argv.push_back(argv_ptr);

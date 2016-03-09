@@ -1,5 +1,5 @@
-﻿#include <gtest/gtest.h>
-#include <qflags/qflags.h>
+﻿#include <qflags/qflags.h>
+#include "qflags_gtest.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 /**

@@ -129,6 +129,7 @@ target_include_directories(qflags
 
 if(TARGET gtest)
     set(TEST_SOURCES
+        test/qflags_gtest.h
         test/command_line.cpp
         test/flag.cpp
         test/string_option.cpp
@@ -171,6 +172,11 @@ if(TARGET gtest)
                                 -fstack-protector-all
             )
         endif()
+    # Set some MSVC specific compiler options
+    elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
+        set(compile_options /analyze
+                            /wd6326 # Potential comparison of a constant with another constant.
+        )
     endif()
 
     foreach(target
