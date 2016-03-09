@@ -21,7 +21,7 @@ The following build systems are supported via CMake:
 
 Other build systems are untested and YMMV.
 
-### Usage
+## Usage
 
 There are three 'framework' classes:
 
@@ -64,6 +64,25 @@ int main(int argc, char* argv[])
 ```
 
 ### Syntax
+
+qflags in general follows the conventions of `getopt` and `getopt_long` with some caveats.
+
+###### Argument Names
+
+- All argument types have a name string; an argument is invoked on the command-line with the argument name prefixed by two dashes, e.g. `--foo`. 
+- The parser does *not* check the length of an argument's name which means it is legal (however inadvisable) to define an argument with a one-character name, e.g. `--f`.
+- If the argument is an `option` argument with a value then the value follows the argument name separated either by whitespace or an equals sign (`=`). e.g. `--foo bar` or `--foo=bar`.
+
+###### Short Argument Names
+
+- Most arguments also have an optional 'short name' which can be invoked on the command-line with the short name prefixed by a single dash, e.g. `-f`. 
+- As with the argument name, the parser does *not* check the length of an argument's short name. This is to allow the use of multibyte characters and multi-character [grapheme clusters](http://unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries) as short argument names.
+- If the argument is an `option` argument with a value then the value follows the short argument name, optionally separated by whitespace. e.g. `-f buzz` or `-fbuzz`.
+- When using the short argument name the equals sign is interpreted as part of the value. e.g. `-f=buzz` yields a value of "=buzz".
+- It is not possible to define an argument with only a short name.
+
+###### Subcommands
+
 TODO :(
 
 ### Argument Types
