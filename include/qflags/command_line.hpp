@@ -9,6 +9,33 @@
 
 namespace qflags {
 
+namespace convert {
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * In a sane world codecvt_utf8<wchar_t> would convert UTF-8 to and from the
+ * system's native wide-character encoding. Instead it is specified to convert
+ * to and from UCS-2 or UCS-4 depending on the size of wchar_t. This isn't a
+ * problem when wchar_t is 32 bits (e.g. on Unix) since UCS-4 and UTF-32 are
+ * bitwise equivalent, but UCS-2 and UTF-16 are incompatible when handling non-
+ * BMP characters.
+ */
+template<size_t _Size> struct codecvt_utf8_wchar
+{
+    using type = std::codecvt_utf8<wchar_t>;
+};
+
+//! Use codecvt_utf8_utf16 for a 16-bit wchar_t.
+template<> struct codecvt_utf8_wchar<sizeof(char16_t)>
+{
+    using type = std::codecvt_utf8_utf16<wchar_t>;
+};
+
+//! Selects an appropriate codecvt facet based on the size of wchar_t.
+using codecvt_utf8_wchar_t = codecvt_utf8_wchar<sizeof(wchar_t)>::type;
+
+} // namespace convert
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  *
@@ -37,8 +64,9 @@ QFLAGS_INLINE command_line::command_line(char const* args, char const* locale)
     if (locale == nullptr) {
         _init(args);
     }
-    // Convert multibyte string to UTF-16 and then to UTF-8 since codecvt does
-    // not support conversions between multibyte encodings.
+    // Convert native multibyte encoded string to the native wide-character
+    // encoding and then to UTF-8 since codecvt does not support conversions
+    // between multibyte encodings.
     else {
         auto conv = new std::codecvt_byname<wchar_t, char, std::mbstate_t>(locale);
         std::mbstate_t state = std::mbstate_t();
@@ -53,7 +81,7 @@ QFLAGS_INLINE command_line::command_line(char const* args, char const* locale)
         std::vector<wchar_t> wargs(total_length_in_characters, 0);
         wchar_t* wargs_ptr = wargs.data();
 
-        // Convert argument string to UTF-16.
+        // Convert argument string to native wide-character encoding.
         conv->in(state,
                  args,
                  args + args_len,
@@ -78,8 +106,9 @@ QFLAGS_INLINE command_line::command_line(int argc, char const* const* argv, char
     if (locale == nullptr) {
         _init(argc, argv);
     }
-    // Convert multibyte strings to UTF-16 and then to UTF-8 since codecvt does
-    // not support conversions between multibyte encodings.
+    // Convert native multibyte encoded strings to the native wide-character
+    // encoding and then to UTF-8 since codecvt does not support conversions
+    // between multibyte encodings.
     else {
         auto conv = new std::codecvt_byname<wchar_t, char, std::mbstate_t>(locale);
         std::mbstate_t state = std::mbstate_t();
@@ -99,7 +128,7 @@ QFLAGS_INLINE command_line::command_line(int argc, char const* const* argv, char
         wchar_t* wargs_ptr = wargs.data();
         wchar_t* wargs_end = wargs.data() + wargs.size();
 
-        // Convert arguments to UTF-16.
+        // Convert arguments to native wide-character encoding.
         for (int ii = 0; ii < argc; ++ii) {
             auto arg_len = strlen(argv[ii]);
             char const* arg_next = argv[ii];
@@ -168,7 +197,7 @@ QFLAGS_INLINE void command_line::_init(wchar_t const* wargs)
     assert(wargs && "wargs cannot be null!");
 
     // Convert wide-character argument string to UTF-8 and parse.
-    std::wstring_convert<std::codecvt_utf8<wchar_t>> conv;
+    std::wstring_convert<convert::codecvt_utf8_wchar_t> conv;
     std::string args = conv.to_bytes(wargs);
 
     _init(args.c_str());
@@ -287,7 +316,7 @@ QFLAGS_INLINE void command_line::_init(char const* args)
  */
 QFLAGS_INLINE void command_line::_init(int argc, wchar_t const* const* wargv)
 {
-    auto conv = new std::codecvt_utf8_utf16<wchar_t>();
+    auto conv = new convert::codecvt_utf8_wchar_t();
     std::mbstate_t state = std::mbstate_t();
 
     // codecvt cannot find the length of an output string so count up the number

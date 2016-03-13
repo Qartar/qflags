@@ -50,32 +50,32 @@ class command_line
     };
 
     /**
-     * Initialize from a UTF-16 encoded wide-character command line string.
+     * Initialize from a native encoded wide-character command line string.
      *  e.g. the return value of GetCommandLineW() on Windows.
      *
      *  @param args
-     *      a UTF-16 encoded wide-character string.
+     *      a native encoded wide-character string.
      */
     command_line(wchar_t const* args);
 
     /**
-     * Initialize from an array of UTF-16 encoded wide-character command line
+     * Initialize from an array of native encoded wide-character command line
      * argument strings.
      *  e.g. the return value of CommandLineToArgvW() on Windows.
      *
      *  @param argc
      *      number of elements in `argv`
      *  @param argv
-     *      an array of UTF-16 encoded wide-character argument strings
+     *      an array of native encoded wide-character argument strings
      */
     command_line(int argc, wchar_t const* const* argv);
 
     /**
-     * Initialize from an array of UTF-16 encoded wide-character command line
+     * Initialize from an array of native encoded wide-character command line
      * argument strings. Automatically deduces argc from static array size.
      *
      *  @param argv
-     *      an array of UTF-16 encoded wide-character argument strings
+     *      an array of native encoded wide-character argument strings
      */
     template<size_t _Size>
     command_line(wchar_t const* const (&argv)[_Size])
@@ -151,13 +151,13 @@ class command_line
     std::vector<char*> _argv;   //!< Argument string pointers
 
   private:
-    //! Initialize from UTF-16 encoded wide-character string.
+    //! Initialize from native encoded wide-character string.
     void _init(wchar_t const* args);
 
     //! Initialize from UTF-8 encoded character string.
     void _init(char const* args);
 
-    //! Initialize from array of UTF-16 encoded wide-character strings.
+    //! Initialize from array of native encoded wide-character strings.
     void _init(int argc, wchar_t const* const* argv);
 
     //! Initialize from array of UTF-8 encoded character strings.

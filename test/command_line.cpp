@@ -54,6 +54,29 @@ TEST(command_line_test, wargs)
 
 ////////////////////////////////////////////////////////////////////////////////
 /**
+ * Test that non-BMP code points are correctly preserved when converted to UTF-8.
+ */
+TEST(command_list_test, wargs_nonbmp)
+{
+    wchar_t const* wargs = 
+        L"\u0444\u0435\u0443\u0444.exe "                // Cyrillic
+        L"-\u05d0\u05d1\u05d2 "                         // Hebrew
+        L"--\u13c0\u13ec "                              // Cherokee
+        L"--\u0926\u094b "                              // Devanagari
+        L"--\U00010338\U00010342\U00010334\U00010339\U00010343";  // Gothic (non-BMP)
+    auto command_line = qflags::command_line(wargs);
+
+    ASSERT_EQ(5, command_line.argc());
+    EXPECT_EQ(std::string("\xd1\x84\xd0\xb5\xd1\x83\xd1\x84.exe"), command_line.argv(0));
+    EXPECT_EQ(std::string("-\xd7\x90\xd7\x91\xd7\x92"), command_line.argv(1));
+    EXPECT_EQ(std::string("--\xe1\x8f\x80\xe1\x8f\xac"), command_line.argv(2));
+    EXPECT_EQ(std::string("--\xe0\xa4\xa6\xe0\xa5\x8b"), command_line.argv(3));
+    EXPECT_EQ(std::string("--\xf0\x90\x8c\xb8\xf0\x90\x8d\x82\xf0\x90\x8c\xb4\xf0\x90\x8c\xb9\xf0\x90\x8d\x83"), command_line.argv(4));
+    EXPECT_EQ(nullptr, command_line.argv(5));
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
  * Test that wide-character argument arrays are correctly converted to UTF-8.
  */
 TEST(command_line_test, wargv)
@@ -79,9 +102,9 @@ TEST(command_line_test, wargv)
 
 ////////////////////////////////////////////////////////////////////////////////
 /**
- * Test that UTF-16 code points are correctly preserved when converted to UTF-8.
+ * Test that non-BMP code points are correctly preserved when converted to UTF-8.
  */
-TEST(command_list_test, wargv_utf16)
+TEST(command_list_test, wargv_nonbmp)
 {
     wchar_t const* wargv[] = 
     {
