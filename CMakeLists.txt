@@ -199,3 +199,16 @@ endif()
 add_executable(levenshtein sample/levenshtein.cpp)
 
 target_link_libraries(levenshtein qflags-static)
+
+add_executable(trivial sample/trivial.cpp)
+
+target_link_libraries(trivial qflags)
+
+add_custom_command(
+    TARGET
+        trivial
+    POST_BUILD
+    COMMAND 
+        ${CMAKE_COMMAND} -DPROJECT_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
+                         -P ${CMAKE_SOURCE_DIR}/cmake/modules/Readme.cmake
+)
