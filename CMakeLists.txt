@@ -137,6 +137,7 @@ if(TARGET gtest)
         test/integer_option.cpp
         test/choice_option.cpp
         test/range_option.cpp
+        test/repeated_option.cpp
         test/parser.cpp
         test/command.cpp
     )

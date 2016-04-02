@@ -841,6 +841,60 @@ class range_option
     virtual int parse(int argc, char const* const* argv, std::string* errors) override;
 };
 
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * @class repeated_option
+ */
+template<typename base_option>
+class repeated_option
+    : public base_option
+{
+  public:
+    static_assert(std::is_base_of<option, base_option>::value,
+                  "Base option must derive from option type!");
+
+    using const_iterator = typename std::vector<base_option>::const_iterator;
+
+    template<typename... Args>
+    repeated_option(Args&&... args)
+        : base_option(std::forward<Args>(args)...) {}
+
+    size_t length() const { return _values.size(); }
+
+    base_option const& operator[](size_t const index) { return _values[index]; }
+
+    // Support iteration
+    const_iterator begin() const { return _values.begin(); }
+    const_iterator end() const { return _values.end(); }
+
+  protected:
+    std::vector<base_option> _values;
+
+  protected:
+    virtual int parse(int argc, char const* const* argv, std::string* errors) override;
+};
+
+//------------------------------------------------------------------------------
+template<typename base_option>
+inline int repeated_option<base_option>::parse(int argc,
+                                               char const* const* argv,
+                                               std::string* errors)
+{
+    // Temporary option for parsing.
+    base_option swap_option = *this;
+
+    // Parse the argument using the base option type.
+    int argn = base_option::parse(argc, argv, errors);
+    std::swap(swap_option, static_cast<base_option&>(*this));
+
+    // If parsing succeeded then add it to values.
+    if (argn > 0) {
+        _values.push_back(std::move(swap_option));
+        base_option::_is_set = true;
+    }
+    return argn;
+}
+
 } // namespace qflags
 
 #if defined(QFLAGS_STATIC)
