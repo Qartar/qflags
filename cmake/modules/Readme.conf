@@ -1,4 +1,7 @@
-# qflags
+# qflags [![Build Status][travis-svg]][travis-url]
+
+[travis-svg]: https://travis-ci.org/Qartar/qflags.svg?branch=master
+[travis-url]: https://travis-ci.org/Qartar/qflags
 
 Simple C++ command-line parsing library
 
