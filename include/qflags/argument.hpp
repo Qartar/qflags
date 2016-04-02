@@ -36,4 +36,10 @@ QFLAGS_INLINE std::string const& argument::value_string() const
     throw std::logic_error(_name + " is not convertible to a string.");
 }
 
+//------------------------------------------------------------------------------
+QFLAGS_INLINE argument const& argument::value_array(size_t const) const
+{
+    throw std::logic_error(_name + " is not an array.");
+}
+
 } // namespace qflags

@@ -194,6 +194,10 @@ class argument
     virtual bool is_command() const { return false; }
 
     //! @return
+    //!     true if the argument contains an array of values
+    virtual bool is_array() const { return false; }
+
+    //! @return
     //!     true if the argument is implicitly convertible to a boolean
     virtual bool is_boolean() const { return false; }
 
@@ -204,6 +208,10 @@ class argument
     //! @return
     //!     true if the argument is implicitly convertible to a string
     virtual bool is_string() const { return false; }
+
+    //! @return
+    //!     the length of the argument array if `is_array` is true
+    virtual size_t array_size() const { return 0; }
 
     //! @return
     //!     the argument value as a boolean if `is_boolean` is true
@@ -217,6 +225,10 @@ class argument
     //!     the argument value as a string if `is_string` is true
     virtual std::string const& value_string() const;
 
+    //! @return
+    //!     the argument array value at `index` if `is_array` is true
+    virtual argument const& value_array(size_t const index) const;
+
     //! User-defined conversions to a boolean value
     operator bool() const { return value_boolean(); }
 
@@ -229,6 +241,12 @@ class argument
 
     //! User-defined conversions to a string value
     operator std::string const&() const { return value_string(); }
+
+    //! @param[in] index
+    //!     index of the argument array value to return
+    //! @return
+    //!     the argument array value at the given index
+    argument const& operator[](size_t const index) const { return value_array(index); }
 
   protected:
     friend class parser;
@@ -391,6 +409,9 @@ class command
     , public parser
 {
   public:
+    using argument::operator[];
+    using parser::operator[];
+
     //! Construct a command argument with the given name.
     //! @param[in] name
     //!     name of the command argument
@@ -853,21 +874,37 @@ class repeated_option
     static_assert(std::is_base_of<option, base_option>::value,
                   "Base option must derive from option type!");
 
-    using const_iterator = typename std::vector<base_option>::const_iterator;
-
+    //! Construct a repeated option with the given name.
+    //! @param[in] name
+    //!     name of the repeated option
+    //! @param[in] args
     template<typename... Args>
-    repeated_option(Args&&... args)
-        : base_option(std::forward<Args>(args)...) {}
+    repeated_option(char const* name, Args&&... args)
+        : base_option(name, std::forward<Args>(args)...) {}
 
-    size_t length() const { return _values.size(); }
+    //! Construct a repeated option with the given name and short name.
+    //! @param[in] name
+    //!     name of the repeated option
+    //! @param[in] short_name
+    //!     short name of the repeated option
+    //! @param[in] args
+    template<typename... Args>
+    repeated_option(char const* name, char const* short_name, Args&&... args)
+        : base_option(name, short_name, std::forward<Args>(args)...) {}
 
-    base_option const& operator[](size_t const index) { return _values[index]; }
+    //! @return true
+    virtual bool is_array() const final { return true; }
 
-    // Support iteration
-    const_iterator begin() const { return _values.begin(); }
-    const_iterator end() const { return _values.end(); }
+    //! @return
+    //!     the length of the argument array
+    virtual size_t array_size() const override { return _values.size(); }
+
+    //! @return
+    //!     the argument array value at `index`
+    virtual argument const& value_array(size_t const index) const override { return _values[index]; }
 
   protected:
+    //! Array of argument values specified for this argument.
     std::vector<base_option> _values;
 
   protected:

@@ -16,6 +16,7 @@ TEST(range_option_test, capabilities)
     EXPECT_EQ(false, option.is_set());
     EXPECT_EQ(false, option.is_flag());
     EXPECT_EQ(false, option.is_command());
+    EXPECT_EQ(false, option.is_array());
     EXPECT_EQ(false, option.is_boolean());
     EXPECT_EQ(true, option.is_integer());
     EXPECT_EQ(true, option.is_string());
@@ -23,6 +24,7 @@ TEST(range_option_test, capabilities)
     EXPECT_THROW(option.value_boolean(), std::logic_error);
     EXPECT_EQ(0, option.value_integer());
     EXPECT_EQ("0", option.value_string());
+    EXPECT_THROW(option.value_array(0), std::logic_error);
 
     EXPECT_THROW(static_cast<bool>(option), std::logic_error);
     EXPECT_EQ(0, static_cast<int64_t>(option));

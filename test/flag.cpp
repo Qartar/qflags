@@ -14,6 +14,7 @@ TEST(flag_test, capabilities)
     EXPECT_EQ(false, flag.is_set());
     EXPECT_EQ(true, flag.is_flag());
     EXPECT_EQ(false, flag.is_command());
+    EXPECT_EQ(false, flag.is_array());
     EXPECT_EQ(true, flag.is_boolean());
     EXPECT_EQ(false, flag.is_integer());
     EXPECT_EQ(false, flag.is_string());
@@ -21,6 +22,7 @@ TEST(flag_test, capabilities)
     EXPECT_EQ(false, flag.value_boolean());
     EXPECT_THROW(flag.value_integer(), std::logic_error);
     EXPECT_THROW(flag.value_string(), std::logic_error);
+    EXPECT_THROW(flag.value_array(0), std::logic_error);
 
     EXPECT_EQ(false, static_cast<bool>(flag));
     EXPECT_THROW(static_cast<int64_t>(flag), std::logic_error);
