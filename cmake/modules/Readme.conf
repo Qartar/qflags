@@ -1,9 +1,11 @@
-# qflags [![Build Status][travis-svg]][travis-url]
+# qflags [![License][license-svg]][license-url] [![Build Status][travis-svg]][travis-url]
 
+[license-svg]: https://img.shields.io/badge/license-MIT-blue.svg
+[license-url]: LICENSE
 [travis-svg]: https://travis-ci.org/Qartar/qflags.svg?branch=master
 [travis-url]: https://travis-ci.org/Qartar/qflags
 
-Simple C++ command-line parsing library
+Simple cross-platform C++ command-line parsing library
 
 ## Overview
 
