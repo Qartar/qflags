@@ -33,7 +33,7 @@ TEST(repeated_option_test, capabilities)
 
 ////////////////////////////////////////////////////////////////////////////////
 /**
- *
+ * Test that repeated_option correctly parses repeated integer arguments.
  */
 TEST(repeated_option_test, parse_repeated_integer)
 {
@@ -50,10 +50,65 @@ TEST(repeated_option_test, parse_repeated_integer)
 
         ASSERT_EQ(true, parser.parse(command_line, &errors));
         ASSERT_EQ(2u, option.array_size());
-        ASSERT_EQ(1, static_cast<int64_t>(option[0]));
-        ASSERT_EQ(1, option[0].value_integer());
-        ASSERT_EQ(2, static_cast<int64_t>(option[1]));
-        ASSERT_EQ(2, option[1].value_integer());
+        EXPECT_EQ(1, static_cast<int64_t>(option[0]));
+        EXPECT_EQ(1, option[0].value_integer());
+        EXPECT_EQ(2, static_cast<int64_t>(option[1]));
+        EXPECT_EQ(2, option[1].value_integer());
         EXPECT_EQ(0u, errors.length());
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * Test that repeated_option correctly parses repeated choice arguments. In
+ * particular, test that the logic used to parse each argument is saving and
+ * restoring the option state correctly.
+ */
+TEST(repeated_option_test, parse_repeated_choice)
+{
+    auto parser = qflags::parser();
+
+    char const* argv[] = { "--foo", "bar", "--foo", "baz" };
+    auto command_line = qflags::command_line(argv);
+
+    auto choices = std::set<std::string>{"bar", "baz"};
+    auto option = qflags::repeated_option<qflags::choice_option>("foo", choices, "bar");
+
+    ASSERT_EQ(true, parser.add_argument(&option));
+    {
+        std::string errors;
+
+        ASSERT_EQ(true, parser.parse(command_line, &errors));
+        ASSERT_EQ(2u, option.array_size());
+        EXPECT_EQ("bar", static_cast<std::string>(option[0]));
+        EXPECT_EQ("bar", option[0].value_string());
+        EXPECT_EQ("baz", static_cast<std::string>(option[1]));
+        EXPECT_EQ("baz", option[1].value_string());
+        EXPECT_EQ(0u, errors.length());
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * Test that repeated_option correctly detects an invalid choice argument. In
+ * particular, test that the logic used to parse each argument is saving and
+ * restoring the option state correctly.
+ */
+TEST(repeated_option_test, parse_invalid_choice)
+{
+    auto parser = qflags::parser();
+
+    char const* argv[] = { "--foo", "bar", "--foo", "buzz" };
+    auto command_line = qflags::command_line(argv);
+
+    auto choices = std::set<std::string>{"bar", "baz"};
+    auto option = qflags::repeated_option<qflags::choice_option>("foo", choices, "bar");
+
+    ASSERT_EQ(true, parser.add_argument(&option));
+    {
+        std::string errors;
+
+        ASSERT_EQ(false, parser.parse(command_line, &errors));
+        EXPECT_NE(0u, errors.length());
     }
 }

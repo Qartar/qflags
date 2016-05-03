@@ -90,14 +90,15 @@ TODO :(
 
 ### Argument Types
 
-| class name       | value type    | description 
-| ----------       | ----------    | -----------
-| `flag`           | `bool`        | `true` if flag was specified on the command line, otherwise `false`. Does not accept an additional value argument.
-| `command`        | `bool`        | `true` if command was specified on the command line, otherwise `false`. Accepts and parses remaining sub-arguments.
-| `string_option`  | `std::string` | Accepts a value argument as a string.
-| `boolean_option` | `bool`        | Accepts a value argument interpreted as a boolean. An error is emitted if the value argument does not match one of the prescribed string values.<sup>[1](#footnote-1)</sup>
-| `integer_option` | `int64_t`     | Accepts a value argument interpreted as an integer. An error is emitted if the value argument cannot be parsed as an integer. 
-| `choice_option`  | `std::string` | Accepts a value argument as a string if it exists in a provided set of permissible values.
-| `range_option`   | `int64_t`     | Accepts a value argument as an integer if it exists in a provided set or range of permissible values.
+| class name        | value type    | description 
+| ----------        | ----------    | -----------
+| `flag`            | `bool`        | `true` if flag was specified on the command line, otherwise `false`. Does not accept an additional value argument.
+| `command`         | `bool`        | `true` if command was specified on the command line, otherwise `false`. Accepts and parses remaining sub-arguments.
+| `string_option`   | `std::string` | Accepts a value argument as a string.
+| `boolean_option`  | `bool`        | Accepts a value argument interpreted as a boolean. An error is emitted if the value argument does not match one of the prescribed string values.<sup>[1](#footnote-1)</sup>
+| `integer_option`  | `int64_t`     | Accepts a value argument interpreted as an integer. An error is emitted if the value argument cannot be parsed as an integer. 
+| `choice_option`   | `std::string` | Accepts a value argument as a string if it exists in a provided set of permissible values.
+| `range_option`    | `int64_t`     | Accepts a value argument as an integer if it exists in a provided set or range of permissible values.
+| `repeated_option` | `<type>[]`    | Accepts repeated value arguments according to the parsing rules of the base option type. Argument values are accessed by index.
 
 <a name="footnote-1">1</a>: The string values "true", "True", "TRUE", and "1" evaluate to `true`. The string values "false", "False", "FALSE", and "0" evaluate to `false`. Any other string value will emit a parsing error. 

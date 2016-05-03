@@ -865,6 +865,18 @@ class range_option
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * @class repeated_option
+ *
+ * @brief Option which can be specified multiple times on the command line.
+ *
+ * Each time the option is invoked a value is stored in the value array which
+ * can be accessed using the `value_array` function or with bracket operator
+ * syntax. Values are stored in the order they are encountered on the command
+ * line.
+ *
+ * `base_option` determines the parsing behavior. Each time the option is
+ * invoked it will attempt to parse the value according to the rules of the base
+ * option. `base_option` must be an option type, e.g. it cannot be a `flag` or
+ * `command` argument.
  */
 template<typename base_option>
 class repeated_option
@@ -878,6 +890,7 @@ class repeated_option
     //! @param[in] name
     //!     name of the repeated option
     //! @param[in] args
+    //!     arguments for the base option's constructor
     template<typename... Args>
     repeated_option(char const* name, Args&&... args)
         : base_option(name, std::forward<Args>(args)...) {}
@@ -888,6 +901,7 @@ class repeated_option
     //! @param[in] short_name
     //!     short name of the repeated option
     //! @param[in] args
+    //!     arguments for the base option's constructor
     template<typename... Args>
     repeated_option(char const* name, char const* short_name, Args&&... args)
         : base_option(name, short_name, std::forward<Args>(args)...) {}
