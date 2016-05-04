@@ -503,15 +503,6 @@ class option
     //! Construct an option with the given name and default value.
     //! @param[in] name
     //!     name of the option argument
-    //! @param[in] default_value
-    //!     default value of the option argument as a string
-    option(char const* name, char const* default_value = "") :
-        argument(name),
-        _value_string(default_value ? default_value : "") {}
-
-    //! Construct an option with the given name and default value.
-    //! @param[in] name
-    //!     name of the option argument
     //! @param[in] short_name
     //!     short name of the option argument
     //! @param[in] default_value

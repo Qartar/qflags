@@ -23,11 +23,6 @@ QFLAGS_INLINE bool parser::add_argument(argument* arg)
 {
     assert(arg && "arg cannot be null!");
 
-    if (!arg) {
-        fprintf(stderr, "Error: Invalid parameter, arg cannot be null!\n");
-        return false;
-    }
-
     // Check for invalid characters in the argument name.
     if (arg->name().find('=') != std::string::npos) {
         fprintf(stderr,
@@ -60,10 +55,6 @@ QFLAGS_INLINE bool parser::add_argument(argument* arg)
         auto const& lhs = arg->short_name();
         for (auto const& argument : _short_arguments) {
             auto const& rhs = argument.second->short_name();
-            if (rhs.empty()) {
-                continue;
-            }
-
             auto const size = std::min<size_t>(lhs.size(), rhs.size());
             auto const equal = std::equal(lhs.begin(),
                                           lhs.begin() + size,
