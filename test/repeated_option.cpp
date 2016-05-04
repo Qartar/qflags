@@ -20,6 +20,7 @@ TEST(repeated_option_test, capabilities)
     EXPECT_EQ(false, option.is_boolean());
     EXPECT_EQ(true, option.is_integer());
     EXPECT_EQ(true, option.is_string());
+    EXPECT_EQ(0u, option.array_size());
 
     EXPECT_THROW(option.value_boolean(), std::logic_error);
     EXPECT_EQ(0, option.value_integer());
@@ -49,6 +50,7 @@ TEST(repeated_option_test, parse_repeated_integer)
         std::string errors;
 
         ASSERT_EQ(true, parser.parse(command_line, &errors));
+        ASSERT_EQ(true, option.is_array());
         ASSERT_EQ(2u, option.array_size());
         EXPECT_EQ(1, static_cast<int64_t>(option[0]));
         EXPECT_EQ(1, option[0].value_integer());
@@ -79,6 +81,7 @@ TEST(repeated_option_test, parse_repeated_choice)
         std::string errors;
 
         ASSERT_EQ(true, parser.parse(command_line, &errors));
+        ASSERT_EQ(true, option.is_array());
         ASSERT_EQ(2u, option.array_size());
         EXPECT_EQ("bar", static_cast<std::string>(option[0]));
         EXPECT_EQ("bar", option[0].value_string());

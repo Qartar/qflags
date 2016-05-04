@@ -18,6 +18,7 @@ TEST(flag_test, capabilities)
     EXPECT_EQ(true, flag.is_boolean());
     EXPECT_EQ(false, flag.is_integer());
     EXPECT_EQ(false, flag.is_string());
+    EXPECT_EQ(0u, flag.array_size());
 
     EXPECT_EQ(false, flag.value_boolean());
     EXPECT_THROW(flag.value_integer(), std::logic_error);

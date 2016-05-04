@@ -42,7 +42,7 @@ TEST(parser_test, add_duplicate)
 
 ////////////////////////////////////////////////////////////////////////////////
 /**
- * Test that the parser detects multiple arguments with the same name.
+ * Test that the parser detects multiple arguments with the same short name.
  */
 TEST(parser_test, add_short_duplicate)
 {
@@ -160,4 +160,25 @@ TEST(parser_test, parse_terminator_argument)
     EXPECT_EQ(3, parser.argc());
     EXPECT_EQ(1, parser.remaining_argc());
     EXPECT_EQ(0u, errors.length());
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * Test that the parser correctly warns when a flag is set multiple times.
+ */
+TEST(parser_test, parse_duplicate_flags)
+{
+    char const* argv[] = { "-f", "-f" };
+    auto command_line = qflags::command_line(argv);
+
+    auto parser = qflags::parser();
+
+    std::string errors;
+
+    auto foo = qflags::flag("foo", "f");
+
+    ASSERT_EQ(true, parser.add_argument(&foo));
+
+    EXPECT_EQ(true, parser.parse(command_line, &errors));
+    EXPECT_NE(0u, errors.length());
 }

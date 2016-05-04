@@ -20,6 +20,7 @@ TEST(string_option_test, capabilities)
     EXPECT_EQ(false, option.is_boolean());
     EXPECT_EQ(false, option.is_integer());
     EXPECT_EQ(true, option.is_string());
+    EXPECT_EQ(0u, option.array_size());
 
     EXPECT_THROW(option.value_boolean(), std::logic_error);
     EXPECT_THROW(option.value_integer(), std::logic_error);
@@ -91,6 +92,36 @@ TEST(string_option_test, parse_string)
         EXPECT_EQ("bar", static_cast<std::string>(parser["foo"]));
         EXPECT_EQ("bar", static_cast<std::string>(option));
         EXPECT_EQ(2, parser.argc());
+        EXPECT_EQ(0, parser.remaining_argc());
+        EXPECT_EQ(0u, errors.length());
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * Test that the parser correctly parses multiple string values.
+ */
+TEST(string_option_test, parse_string_multiple)
+{
+    auto parser = qflags::parser();
+
+    char const* argv[] = { "--foo", "bar", "--baz", "buzz" };
+    auto command_line = qflags::command_line(argv);
+
+    auto foo = qflags::string_option("foo");
+    auto baz = qflags::string_option("baz");
+
+    ASSERT_EQ(true, parser.add_argument(&foo));
+    ASSERT_EQ(true, parser.add_argument(&baz));
+    {
+        std::string errors;
+
+        ASSERT_EQ(true, parser.parse(command_line, &errors));
+        EXPECT_EQ("bar", static_cast<std::string>(parser["foo"]));
+        EXPECT_EQ("bar", static_cast<std::string>(foo));
+        EXPECT_EQ("buzz", static_cast<std::string>(parser["baz"]));
+        EXPECT_EQ("buzz", static_cast<std::string>(baz));
+        EXPECT_EQ(4, parser.argc());
         EXPECT_EQ(0, parser.remaining_argc());
         EXPECT_EQ(0u, errors.length());
     }

@@ -20,6 +20,7 @@ TEST(choice_option_test, capabilities)
     EXPECT_EQ(false, option.is_boolean());
     EXPECT_EQ(false, option.is_integer());
     EXPECT_EQ(true, option.is_string());
+    EXPECT_EQ(0u, option.array_size());
 
     EXPECT_THROW(option.value_boolean(), std::logic_error);
     EXPECT_THROW(option.value_integer(), std::logic_error);

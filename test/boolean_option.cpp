@@ -20,6 +20,7 @@ TEST(boolean_option_test, capabilities)
     EXPECT_EQ(true, option.is_boolean());
     EXPECT_EQ(false, option.is_integer());
     EXPECT_EQ(true, option.is_string());
+    EXPECT_EQ(0u, option.array_size());
 
     EXPECT_EQ(false, option.value_boolean());
     EXPECT_THROW(option.value_integer(), std::logic_error);
@@ -110,6 +111,28 @@ TEST(boolean_option_test, parse_boolean_no_value)
     auto parser = qflags::parser();
 
     char const* argv[] = { "--foo" };
+    auto command_line = qflags::command_line(argv);
+
+    auto option = qflags::boolean_option("foo");
+
+    ASSERT_EQ(true, parser.add_argument(&option));
+    {
+        std::string errors;
+
+        EXPECT_EQ(false, parser.parse(command_line, &errors));
+        EXPECT_NE(0u, errors.length());
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * Test that the parser correctly detects an invalid boolean value.
+ */
+TEST(boolean_option_test, parse_boolean_bad_value)
+{
+    auto parser = qflags::parser();
+
+    char const* argv[] = { "--foo", "ON" };
     auto command_line = qflags::command_line(argv);
 
     auto option = qflags::boolean_option("foo");
