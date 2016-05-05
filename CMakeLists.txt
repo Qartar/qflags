@@ -7,10 +7,18 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
 # CMake by default links targets to the shared runtime library but this is
 # overridden for qflags unless this option is enabled. This may be necessary
 # if qflags is being linked to other targets which use the shared runtime.
-option(qflags_use_shared_crt
+option(QFLAGS_USE_SHARED_RUNTIME
        "Use shared rather than static runtime library."
        OFF
 )
+
+option(QFLAGS_BUILD_STATIC "Build static library version of qflags." ON)
+
+option(QFLAGS_BUILD_TESTS "Build qflags tests if gtest is available." ON)
+
+option(QFLAGS_BUILD_SAMPLES "Build qflags sample programs." ON)
+
+option(QFLAGS_EXECUTE_TESTS "Execute qflags tests as part of the build." ON)
 
 ################################################################################
 
@@ -50,7 +58,7 @@ if(MSVC)
         set(${flag_var} "${${flag_var}} ${compiler_flags}")
 
         # Disable dynamic linking to C++ runtime libraries
-        if(NOT qflags_use_shared_crt)
+        if(NOT QFLAGS_USE_SHARED_RUNTIME)
             string(REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
         endif()
 
@@ -101,20 +109,22 @@ set(SOURCES
     src/qflags-all.cpp
 )
 
-add_library(qflags-static STATIC
-    ${INCLUDES}
-    ${SOURCES}
-)
+if(QFLAGS_BUILD_STATIC)
+    add_library(qflags-static STATIC
+        ${INCLUDES}
+        ${SOURCES}
+    )
 
-target_include_directories(qflags-static
-    PUBLIC
-        include
-)
+    target_include_directories(qflags-static
+        PUBLIC
+            include
+    )
 
-target_compile_definitions(qflags-static
-    PUBLIC
-        -DQFLAGS_STATIC
-)
+    target_compile_definitions(qflags-static
+        PUBLIC
+            -DQFLAGS_STATIC
+    )
+endif()
 
 ################################################################################
 
@@ -127,7 +137,7 @@ target_include_directories(qflags
 
 ################################################################################
 
-if(TARGET gtest)
+if(QFLAGS_BUILD_TESTS AND TARGET gtest)
     set(TEST_SOURCES
         test/qflags_gtest.h
         test/command_line.cpp
@@ -141,14 +151,6 @@ if(TARGET gtest)
         test/parser.cpp
         test/command.cpp
     )
-
-    add_executable(qflags_test ${TEST_SOURCES})
-
-    target_link_libraries(qflags_test qflags gtest gtest_main)
-
-    add_executable(qflags-static_test ${TEST_SOURCES})
-
-    target_link_libraries(qflags-static_test qflags-static gtest gtest_main)
 
     # Set some Clang specific compiler options
     if(${CMAKE_CXX_COMPILER_ID} STREQUAL Clang)
@@ -180,30 +182,37 @@ if(TARGET gtest)
         )
     endif()
 
-    foreach(target
-            qflags_test qflags-static_test)
+    add_executable(qflags_test ${TEST_SOURCES})
+    target_link_libraries(qflags_test qflags gtest gtest_main)
+    target_compile_options(qflags_test PUBLIC ${compile_options})
 
-        add_custom_command(TARGET ${target}
-                           POST_BUILD
-                           COMMAND ${target})
+    if(QFLAGS_EXECUTE_TESTS)
+        add_custom_command(TARGET qflags_test POST_BUILD COMMAND qflags_test)
+    endif()
 
-        target_compile_options(${target}
-            PUBLIC
-                ${compile_options}
-        )
-    endforeach()
+    if(QFLAGS_BUILD_STATIC)
+        add_executable(qflags-static_test ${TEST_SOURCES})
+        target_link_libraries(qflags-static_test qflags-static gtest gtest_main)
+        target_compile_options(qflags-static_test PUBLIC ${compile_options})
+
+        if(QFLAGS_EXECUTE_TESTS)
+            add_custom_command(TARGET qflags-static_test POST_BUILD COMMAND qflags-static_test)
+        endif()
+    endif()
 
 endif()
 
 ################################################################################
 
-add_executable(levenshtein sample/levenshtein.cpp)
+if (QFLAGS_BUILD_SAMPLES)
+    add_executable(levenshtein sample/levenshtein.cpp)
+    target_link_libraries(levenshtein qflags)
 
-target_link_libraries(levenshtein qflags-static)
+    add_executable(trivial sample/trivial.cpp)
+    target_link_libraries(trivial qflags)
+endif()
 
-add_executable(trivial sample/trivial.cpp)
-
-target_link_libraries(trivial qflags)
+################################################################################
 
 add_custom_command(
     TARGET
