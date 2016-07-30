@@ -210,15 +210,14 @@ if (QFLAGS_BUILD_SAMPLES)
 
     add_executable(trivial sample/trivial.cpp)
     target_link_libraries(trivial qflags)
+
+    # Automatically embed the trivial sample source into the Readme
+    add_custom_command(
+        TARGET
+            trivial
+        POST_BUILD
+        COMMAND 
+            ${CMAKE_COMMAND} -DPROJECT_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
+                             -P ${CMAKE_SOURCE_DIR}/cmake/modules/Readme.cmake
+    )
 endif()
-
-################################################################################
-
-add_custom_command(
-    TARGET
-        trivial
-    POST_BUILD
-    COMMAND 
-        ${CMAKE_COMMAND} -DPROJECT_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-                         -P ${CMAKE_SOURCE_DIR}/cmake/modules/Readme.cmake
-)
