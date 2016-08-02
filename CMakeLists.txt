@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.11)
 
 project(qflags)
 
-set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/modules)
 
 # CMake by default links targets to the shared runtime library but this is
 # overridden for qflags unless this option is enabled. This may be necessary
