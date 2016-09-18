@@ -40,7 +40,8 @@ if(MSVC)
         # -Werror   Warnings as errors
         # /MP       Multi-process compilation
         # /sdl      Additional security checks
-        set(compiler_flags "-Wall -Wextra -Werror -Woverloaded-virtual -Wtype-limits /MP /sdl")
+        # -frtti    Required to avoid compiler errors in <memory>
+        set(compiler_flags "-Wall -Wextra -Werror -Woverloaded-virtual -Wtype-limits /MP /sdl -frtti")
 
         # Set gmock and gtest as system headers in order to suppress warnings.
         set(compiler_flags "${compiler_flags} --system-header-prefix=gtest/")
