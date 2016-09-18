@@ -12,7 +12,7 @@ namespace qflags {
  *
  */
 QFLAGS_INLINE boolean_option::boolean_option(char const* name, bool default_value) :
-    boolean_option(name, "", default_value) {}
+    boolean_option(name, "", default_value, "") {}
 
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -20,8 +20,9 @@ QFLAGS_INLINE boolean_option::boolean_option(char const* name, bool default_valu
  */
 QFLAGS_INLINE boolean_option::boolean_option(char const* name,
                                              char const* short_name,
-                                             bool default_value) :
-    option(name, short_name, default_value ? "true" : "false"),
+                                             bool default_value,
+                                             char const* description) :
+    option(name, short_name, default_value ? "true" : "false", description),
     _value_boolean(default_value),
     _default_value(default_value) {}
 

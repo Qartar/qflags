@@ -11,8 +11,8 @@ namespace qflags {
 /**
  *
  */
-QFLAGS_INLINE command::command(char const* name) :
-    argument(name) {}
+QFLAGS_INLINE command::command(char const* name, char const* description) :
+    argument(name, "", description) {}
 
 ////////////////////////////////////////////////////////////////////////////////
 /**

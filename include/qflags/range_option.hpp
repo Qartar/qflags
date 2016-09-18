@@ -14,7 +14,7 @@ namespace qflags {
 QFLAGS_INLINE range_option::range_option(char const* name,
                                          std::initializer_list<int64_t>&& choices,
                                          int64_t default_value) :
-    range_option(name, "", std::move(choices), default_value) {}
+    range_option(name, "", std::move(choices), default_value, "") {}
 
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -24,7 +24,7 @@ QFLAGS_INLINE range_option::range_option(char const* name,
                                          int64_t minimum_value,
                                          int64_t maximum_value,
                                          int64_t default_value) :
-    range_option(name, "", minimum_value, maximum_value, default_value) {}
+    range_option(name, "", minimum_value, maximum_value, default_value, "") {}
 
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -33,8 +33,9 @@ QFLAGS_INLINE range_option::range_option(char const* name,
 QFLAGS_INLINE range_option::range_option(char const* name,
                                          char const* short_name,
                                          std::initializer_list<int64_t>&& choices,
-                                         int64_t default_value) :
-    integer_option(name, short_name, default_value),
+                                         int64_t default_value,
+                                         char const* description) :
+    integer_option(name, short_name, default_value, description),
     _minimum_value(INT64_MIN),
     _maximum_value(INT64_MAX)
 {
@@ -51,8 +52,9 @@ QFLAGS_INLINE range_option::range_option(char const* name,
                                          char const* short_name,
                                          int64_t minimum_value,
                                          int64_t maximum_value,
-                                         int64_t default_value) :
-    integer_option(name, short_name, default_value),
+                                         int64_t default_value,
+                                         char const* description) :
+    integer_option(name, short_name, default_value, description),
     _minimum_value(minimum_value),
     _maximum_value(maximum_value)
 {

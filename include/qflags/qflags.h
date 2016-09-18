@@ -248,23 +248,24 @@ class argument
     //!     the argument array value at the given index
     argument const& operator[](size_t const index) const { return value_array(index); }
 
+    //! @return
+    //!     a brief description of the arugment for help screens
+    std::string const& description() const { return _description; }
+
   protected:
     friend class parser;
 
     std::string _name;          //!< name of this argument
     std::string _short_name;    //!< single-character name of the argument
+    std::string _description;   //!< brief description of the argument
     bool _is_set;               //!< true if the argument was set by the command line
 
   protected:
     //! @param[in] name
     //!     name of the argument
-    argument(char const* name);
-
-    //! @param[in] name
-    //!     name of the argument
     //! @param[in] short_name
     //!     short name of the argument
-    argument(char const* name, char const* short_name);
+    argument(char const* name, char const* short_name, char const* description);
 
     //! Process the command line arguments for this argument.
     //! @param[in] argc
@@ -424,7 +425,9 @@ class command
     //! Construct a command argument with the given name.
     //! @param[in] name
     //!     name of the command argument
-    command(char const* name);
+    //! @param[in] description
+    //!     brief description of the command argument
+    command(char const* name, char const* description = "");
 
     //! @return true
     virtual bool is_command() const final { return true; }
@@ -470,7 +473,9 @@ class flag
     //!     name of the flag argument
     //! @param[in] short_name
     //!     short name of the flag argument for use in a flag group
-    flag(char const* name, char const* short_name);
+    //! @param[in] description
+    //!     brief description of the flag argument
+    flag(char const* name, char const* short_name, char const* description = "");
 
     //! @return true
     virtual bool is_flag() const final { return true; }
@@ -517,8 +522,13 @@ class option
     //!     short name of the option argument
     //! @param[in] default_value
     //!     default value of the option argument as a string
-    option(char const* name, char const* short_name, char const* default_value) :
-        argument(name, short_name),
+    //! @param[in] description
+    //!     brief description of the option argument
+    option(char const* name,
+           char const* short_name,
+           char const* default_value,
+           char const* description) :
+        argument(name, short_name, description),
         _value_string(default_value) {}
 
     //! Process the command line arguments for this argument as a string. If the
@@ -565,7 +575,12 @@ class string_option
     //!     short name of the string option
     //! @param[in] default_value
     //!     default value of the string option as a string
-    string_option(char const* name, char const* short_name, char const* default_value);
+    //! @param[in] description
+    //!     brief description of the string option
+    string_option(char const* name,
+                  char const* short_name,
+                  char const* default_value,
+                  char const* description = "");
 
   protected:
     std::string _default_value; //!< Default value as a string.
@@ -613,7 +628,12 @@ class boolean_option
     //!     short name of the boolean option
     //! @param[in] default_value
     //!     default value of the boolean option as a boolean
-    boolean_option(char const* name, char const* short_name, bool default_value = false);
+    //! @param[in] description
+    //!     brief description of the boolean option
+    boolean_option(char const* name,
+                   char const* short_name,
+                   bool default_value = false,
+                   char const* description = "");
 
     //! @return true
     virtual bool is_boolean() const final { return true; }
@@ -679,7 +699,12 @@ class integer_option
     //!     short name of the integer option
     //! @param[in] default_value
     //!     default value of the integer option as an integer
-    integer_option(char const* name, char const* short_name, int64_t default_value = 0);
+    //! @param[in] description
+    //!     brief description of the integer option
+    integer_option(char const* name,
+                   char const* short_name,
+                   int64_t default_value = 0,
+                   char const* description = "");
 
     //! @return true
     virtual bool is_integer() const final { return true; }
@@ -762,10 +787,13 @@ class choice_option
     //!     a set of permissible values of the choice option
     //! @param[in] default_value
     //!     default value of the choice option
+    //! @param[in] description
+    //!     brief description of the choice option
     choice_option(char const* name,
                   char const* short_name,
                   std::initializer_list<char const*>&& choices,
-                  char const* default_value);
+                  char const* default_value,
+                  char const* description = "");
 
     //! Construct a choice option with the given name and permissible values.
     //! @param[in] name
@@ -776,10 +804,13 @@ class choice_option
     //!     a set of permissible values of the choice option
     //! @param[in] default_value
     //!     default value of the choice option
+    //! @param[in] description
+    //!     brief description of the choice option
     choice_option(char const* name,
                   char const* short_name,
                   std::set<std::string> const& choices,
-                  char const* default_value);
+                  char const* default_value,
+                  char const* description = "");
 
   protected:
     //! A set of permissible values for this argument.
@@ -833,10 +864,13 @@ class range_option
     //!     a set of permissible values of the range option
     //! @param[in] default_value
     //!     default value of the range option as an integer
+    //! @param[in] description
+    //!     brief description of the range option
     range_option(char const* name,
                  char const* short_name,
                  std::initializer_list<int64_t>&& choices,
-                 int64_t default_value);
+                 int64_t default_value,
+                 char const* description = "");
 
     //! Construct a range option with the given name and permissible values.
     //! @param[in] name
@@ -849,11 +883,14 @@ class range_option
     //!     the maximum permissible value of the range option
     //! @param[in] default_value
     //!     default value of the range option as an integer
+    //! @param[in] description
+    //!     brief description of the range option
     range_option(char const* name,
                  char const* short_name,
                  int64_t minimum_value,
                  int64_t maximum_value,
-                 int64_t default_value);
+                 int64_t default_value,
+                 char const* description = "");
 
   protected:
     int64_t _minimum_value; //!< Minimum permissible value for this argument.

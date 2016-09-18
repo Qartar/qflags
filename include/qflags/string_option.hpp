@@ -13,7 +13,7 @@ namespace qflags {
  */
 QFLAGS_INLINE string_option::string_option(char const* name,
                                            char const* default_value) :
-    string_option(name, "", default_value) {}
+    string_option(name, "", default_value, "") {}
 
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -21,8 +21,9 @@ QFLAGS_INLINE string_option::string_option(char const* name,
  */
 QFLAGS_INLINE string_option::string_option(char const* name,
                                            char const* short_name,
-                                           char const* default_value) :
-    option(name, short_name, default_value ? default_value : ""),
+                                           char const* default_value,
+                                           char const* description) :
+    option(name, short_name, default_value ? default_value : "", description),
     _default_value(default_value ? default_value : "") {}
 
 ////////////////////////////////////////////////////////////////////////////////

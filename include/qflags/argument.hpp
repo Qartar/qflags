@@ -8,14 +8,12 @@ namespace qflags {
 ////////////////////////////////////////////////////////////////////////////////
 
 //------------------------------------------------------------------------------
-QFLAGS_INLINE argument::argument(char const* name) :
-    argument(name, "") {}
-
-//------------------------------------------------------------------------------
 QFLAGS_INLINE argument::argument(char const* name,
-                                 char const* short_name) :
+                                 char const* short_name,
+                                 char const* description) :
     _name(name),
     _short_name(short_name),
+    _description(description),
     _is_set(false) {}
 
 //------------------------------------------------------------------------------
