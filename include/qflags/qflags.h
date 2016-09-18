@@ -360,6 +360,10 @@ class parser
     //!     a string describing usage of the arguments in the parser.
     std::string usage_string() const;
 
+    //! @return
+    //!     a multi-line string describing the arguments.
+    std::string help_string() const;
+
   private:
     //! A copy of the original command line provided to `parse`.
     command_line _command_line;

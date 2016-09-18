@@ -149,6 +149,63 @@ QFLAGS_INLINE std::string parser::usage_string() const
 /**
  *
  */
+QFLAGS_INLINE std::string parser::help_string() const
+{
+    constexpr static char padding[] = "                          ";
+    constexpr size_t padding_size = sizeof(padding) / sizeof(padding[0]);
+    std::string help;
+
+    for (auto const& arg : _arguments) {
+        std::string arg_usage = arg.second->usage();
+        std::string usage;
+
+        bool has_short_name = (arg.second->short_name().length() != 0);
+        bool has_usage = (arg_usage.length() != 0);
+
+        if (has_short_name && has_usage) {
+            // e.g. "  -f --foo <string>"
+            usage = "  -" + arg.second->short_name() + " --" + arg.second->name() + " " + arg_usage;
+        } else if (has_short_name) {
+            // e.g. "  -f --foo"
+            usage = "  -" + arg.second->short_name() + " --" + arg.second->name();
+        } else if (has_usage) {
+            // e.g. "     --foo <string>"
+            usage = "     --" + arg.second->name() + " " + arg_usage;
+        } else {
+            // e.g. "     --foo"
+            usage = "     --" + arg.second->name();
+        }
+
+        help += usage;
+
+        // If argument has no description then just add a line break and continue
+        if (arg.second->description().length() == 0) {
+            help += '\n';
+            continue;
+        }
+        //  Add a line break if usage string would run past padding
+        else if (usage.length() > padding_size - 2) {
+            help += '\n';
+            help += padding;
+        }
+        // Align description
+        else {
+            help += (padding + usage.length());
+        }
+
+        help += arg.second->description();
+        if (help.back() != '\n') {
+            help += '\n';
+        }
+    }
+
+    return help;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ *
+ */
 QFLAGS_INLINE bool parser::parse(command_line const& command_line, std::string* errors)
 {
     _command_line = command_line;
