@@ -146,7 +146,7 @@ int main(int argc, char* argv[])
     fprintf(stdout, "%s", errors.c_str());
 
     // Compare two strings and print their edit distance.
-    if (parser.remaining_argc() == 2) {
+    if (parser.remaining_argc() == 3) {
         unsigned long long distance = levenshtein(parser.remaining_argv()[1],
                                                   parser.remaining_argv()[2],
                                                   ignore_case,
@@ -154,7 +154,7 @@ int main(int argc, char* argv[])
         fprintf(stdout, "%llu\n", distance);
     }
     // Compare multiple strings and find the two nearest strings.
-    else if (parser.remaining_argc() > 2) {
+    else if (parser.remaining_argc() > 3) {
         find_nearest(parser.remaining_argc() - 1,
                      parser.remaining_argv() + 1,
                      ignore_case,
