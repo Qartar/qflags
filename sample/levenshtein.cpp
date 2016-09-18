@@ -160,6 +160,12 @@ int main(int argc, char* argv[])
                      ignore_case,
                      print_matrix);
     }
+    // Print usage string
+    else {
+        fprintf(stdout,
+                "usage: levenshtein %s <string> <string> [<string>...]\n",
+                parser.usage_string().c_str());
+    }
 
     return result ? 0 : 1;
 }

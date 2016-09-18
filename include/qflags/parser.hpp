@@ -112,6 +112,43 @@ QFLAGS_INLINE argument const& parser::operator[](char const* name) const
 /**
  *
  */
+QFLAGS_INLINE std::string parser::usage_string() const
+{
+    std::string usage;
+
+    for (auto const& arg : _arguments) {
+        std::string arg_usage = arg.second->usage();
+
+        bool has_short_name = (arg.second->short_name().length() != 0);
+        bool has_usage = (arg_usage.length() != 0);
+
+        if (has_short_name && has_usage) {
+            // e.g. [(-f | --foo) <string>]
+            usage += "[(-" + arg.second->short_name() + " | --" + arg.second->name() + ") " + arg_usage + "] ";
+        } else if (has_short_name) {
+            // e.g. [-f | --foo]
+            usage += "[-" + arg.second->short_name() + " | --" + arg.second->name() + "] ";
+        } else if (has_usage) {
+            // e.g. [--foo <string>]
+            usage += "[--" + arg.second->name() + " " + arg_usage + "] ";
+        } else {
+            // e.g. [--foo]
+            usage += "[--" + arg.second->name() + "] ";
+        }
+    }
+
+    // Remove trailing whitespace
+    if (_arguments.size()) {
+        usage.back() = '\0';
+    }
+
+    return usage;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ *
+ */
 QFLAGS_INLINE bool parser::parse(command_line const& command_line, std::string* errors)
 {
     _command_line = command_line;

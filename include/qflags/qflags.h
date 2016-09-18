@@ -278,6 +278,11 @@ class argument
     //!      0 if the argument is unmatched, or
     //!     -1 if the argument is invalid.
     virtual int parse(int argc, char const* const* argv, std::string* errors) = 0;
+
+    //! @return
+    //!     a string describing the format of any following bound arguments or
+    //!     an empty string if the argument has no bound arguments.
+    virtual std::string usage() const { return ""; }
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -349,6 +354,10 @@ class parser
     //! @return
     //!     specified argument by index as a UTF-8 encoded string.
     char const* remaining_argv(int argn) const { return _remaining.argv(argn); }
+
+    //! @return
+    //!     a string describing usage of the arguments in the parser.
+    std::string usage_string() const;
 
   private:
     //! A copy of the original command line provided to `parse`.
@@ -430,6 +439,7 @@ class command
 
   protected:
     virtual int parse(int argc, char const* const* argv, std::string* errors) override;
+    virtual std::string usage() const override { return usage_string(); }
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -562,6 +572,7 @@ class string_option
 
   protected:
     virtual int parse(int argc, char const* const* argv, std::string* errors) override;
+    virtual std::string usage() const override { return "<string>"; }
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -617,6 +628,7 @@ class boolean_option
 
   protected:
     virtual int parse(int argc, char const* const* argv, std::string* errors) override;
+    virtual std::string usage() const override { return "(true|false)"; }
 
     //! Process the command line arguments for this argument as a boolean.
     //! If the argument is invalid then the value stored in value_string
@@ -682,6 +694,7 @@ class integer_option
 
   protected:
     virtual int parse(int argc, char const* const* argv, std::string* errors) override;
+    virtual std::string usage() const override { return "<int>"; }
 
     //! Process the command line arguments for this argument as an integer.
     //! If the argument is invalid then the value stored in value_string
