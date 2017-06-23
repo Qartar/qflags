@@ -69,7 +69,7 @@ if(MSVC)
     endforeach()
 
     # Enable Unicode
-    add_definitions(-D_UNICODE -DUNICODE)
+    add_definitions(-D_UNICODE -DUNICODE -D_HAS_EXCEPTIONS=0)
 
 elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL GNU OR ${CMAKE_CXX_COMPILER_ID} STREQUAL Clang)
 
