@@ -37,7 +37,7 @@ QFLAGS_INLINE int integer_option::parse(int argc, char const* const* argv, std::
 
     int argn = _parse_integer(argc, argv, &_value_string, &_value_integer, errors);
 
-    _is_set = (argn > 0) ? true : false;
+    _is_set |= (argn > 0) ? true : false;
 
     return argn;
 }
