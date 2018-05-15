@@ -35,9 +35,9 @@ QFLAGS_INLINE int string_option::parse(int argc, char const* const* argv, std::s
     assert(argv && "argv must not be null!");
     assert(errors && "errors must not be null!");
 
-    int argn = _parse_string(argc, argv, &_value_string, errors);
+    int argn = _is_set ? 0 : _parse_string(argc, argv, &_value_string, errors);
 
-    _is_set = (argn > 0) ? true : false;
+    _is_set |= (argn > 0) ? true : false;
 
     return argn;
 }

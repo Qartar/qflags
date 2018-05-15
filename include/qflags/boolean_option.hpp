@@ -35,9 +35,9 @@ QFLAGS_INLINE int boolean_option::parse(int argc, char const* const* argv, std::
     assert(argv && "argv must not be null!");
     assert(errors && "errors must not be null!");
 
-    int argn = _parse_boolean(argc, argv, &_value_string, &_value_boolean, errors);
+    int argn = _is_set ? 0 : _parse_boolean(argc, argv, &_value_string, &_value_boolean, errors);
 
-    _is_set = (argn > 0) ? true : false;
+    _is_set |= (argn > 0) ? true : false;
 
     return argn;
 }

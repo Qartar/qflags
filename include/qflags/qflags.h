@@ -978,6 +978,7 @@ inline int repeated_option<base_option>::parse(int argc,
 {
     // Temporary option for parsing.
     base_option swap_option = *this;
+    base_option::_is_set = false;
 
     // Parse the argument using the base option type.
     int argn = base_option::parse(argc, argv, errors);

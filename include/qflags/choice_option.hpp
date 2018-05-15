@@ -66,7 +66,7 @@ QFLAGS_INLINE int choice_option::parse(int argc, char const* const* argv, std::s
     assert(errors && "errors must not be null!");
 
     // Check if argument could be parsed as any string.
-    int argn = _parse_string(argc, argv, &_value_string, errors);
+    int argn = _is_set ? 0 : _parse_string(argc, argv, &_value_string, errors);
 
     if (argn > 0) {
         // Check that the argument value is valid.

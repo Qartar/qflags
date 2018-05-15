@@ -71,7 +71,7 @@ QFLAGS_INLINE int range_option::parse(int argc, char const* const* argv, std::st
     assert(errors && "errors must not be null!");
 
     // Check if argument could be parsed as any integer.
-    int argn = _parse_integer(argc, argv, &_value_string, &_value_integer, errors);
+    int argn = _is_set ? 0 : _parse_integer(argc, argv, &_value_string, &_value_integer, errors);
 
     if (argn > 0) {
         // Check that the argument value is valid.

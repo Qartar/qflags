@@ -182,3 +182,29 @@ TEST(parser_test, parse_duplicate_flags)
     EXPECT_EQ(true, parser.parse(command_line, &errors));
     EXPECT_NE(0u, errors.length());
 }
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * Test that `is_set` is set properly after parsing.
+ */
+TEST(parser_test, parse_is_set)
+{
+    char const* argv[] = { "-a", "10", "-b", "20" };
+    auto command_line = qflags::command_line(argv);
+
+    auto parser = qflags::parser();
+
+    std::string errors;
+
+    auto foo = qflags::integer_option("foo", "a");
+    auto bar = qflags::integer_option("bar", "b");
+
+    ASSERT_EQ(true, parser.add_argument(&foo));
+    ASSERT_EQ(true, parser.add_argument(&bar));
+    ASSERT_EQ(true, parser.parse(command_line,&errors));
+
+    EXPECT_TRUE(foo.is_set());
+    EXPECT_EQ(10, static_cast<int>(foo));
+    EXPECT_TRUE(bar.is_set());
+    EXPECT_EQ(20, static_cast<int>(bar));
+}

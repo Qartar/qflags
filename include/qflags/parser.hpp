@@ -214,6 +214,11 @@ QFLAGS_INLINE bool parser::parse(command_line const& command_line, std::string* 
     std::vector<char const*> argv(_command_line.argv(),
                                   _command_line.argv() + argc);
 
+    // Reset all arguments
+    for (auto& arg : _arguments) {
+        arg.second->_is_set = false;
+    }
+
     for (size_t ii = 0; ii < argv.size();) {
         // Arg is a short flag or group of short flags.
         if (argv[ii][0] == '-' && argv[ii][1] != '-') {
