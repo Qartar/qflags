@@ -219,6 +219,6 @@ if (QFLAGS_BUILD_SAMPLES)
         POST_BUILD
         COMMAND 
             ${CMAKE_COMMAND} -DPROJECT_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-                             -P ${CMAKE_SOURCE_DIR}/cmake/modules/Readme.cmake
+                             -P ${PROJECT_SOURCE_DIR}/cmake/modules/Readme.cmake
     )
 endif()
